@@ -1,0 +1,24 @@
+name: ronin-web-spider
+summary: collection of common web spidering routines
+description: |
+  A collection of common web spidering routines using the spidr gem.
+
+license: LGPL-3.0
+authors: Postmodern
+email: postmodern.mod3@gmail.com
+homepage: https://ronin-rb.dev/
+has_yard: true
+
+metadata:
+  documentation_uri: https://rubydoc.info/gems/ronin-web-spider
+  source_code_uri:   https://github.com/ronin-rb/ronin-web-spider
+  bug_tracker_uri:   https://github.com/ronin-rb/ronin-web-spider/issues
+  changelog_uri:     https://github.com/ronin-rb/ronin-web-spider/blob/master/ChangeLog.md
+
+required_ruby_version: ">= 2.7.0"
+
+dependencies:
+  spider: ~> 0.2
+
+development_dependencies:
+  bundler: ~> 2.0
