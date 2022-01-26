@@ -18,7 +18,7 @@ metadata:
 required_ruby_version: ">= 2.7.0"
 
 dependencies:
-  spider: ~> 0.2
+  spidr: ~> 0.6
 
 development_dependencies:
   bundler: ~> 2.0
