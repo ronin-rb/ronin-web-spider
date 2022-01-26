@@ -19,7 +19,6 @@
 # along with ronin-web-spider.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/web/web'
 require 'ronin/ui/output/helpers'
 
 require 'spidr/agent'
