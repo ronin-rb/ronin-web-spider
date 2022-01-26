@@ -19,8 +19,6 @@
 # along with ronin-web-spider.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/ui/output/helpers'
-
 require 'spidr/agent'
 
 module Ronin
@@ -31,8 +29,6 @@ module Ronin
       # [Ronin::UI::Output::Helpers](http://rubydoc.info/gems/ronin/Ronin/UI/Output/Helpers).
       #
       class Agent < Spidr::Agent
-
-        include UI::Output::Helpers
 
         #
         # Creates a new Spider object.
@@ -104,12 +100,6 @@ module Ronin
           }.merge(options)
 
           super(options)
-
-          if options.fetch(:verbose,true)
-            every_url do |url|
-              print_info("Spidering #{url}")
-            end
-          end
 
           yield self if block_given?
         end
