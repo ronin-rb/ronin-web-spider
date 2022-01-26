@@ -27,7 +27,7 @@ $ ronin-web-spider
 ## Requirements
 
 * [Ruby] >= 2.7.0
-* [spidr] ~> 0.2
+* [spidr] ~> 0.6
 
 ## Install
 
