@@ -4,7 +4,8 @@ gemspec
 
 gem 'jruby-openssl',	'~> 0.7', platforms: :jruby
 
-# gem 'spidr',  '~> 0.6', github: 'postmodern/spidr'
+gem 'spidr',  '~> 0.7', github: 'postmodern/spidr',
+                        branch: '0.7.0'
 
 group :development do
   gem 'rake'
