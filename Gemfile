@@ -12,6 +12,8 @@ group :development do
   gem 'rubygems-tasks', '~> 0.2'
 
   gem 'rspec',          '~> 3.0'
+  gem 'webmock',        '~> 2.0'
+  gem 'sinatra',        '~> 1.0'
   gem 'simplecov',      '~> 0.20'
 
   gem 'kramdown',      '~> 2.0'
