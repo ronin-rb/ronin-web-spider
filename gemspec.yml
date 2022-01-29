@@ -1,6 +1,6 @@
 name: ronin-web-spider
 summary: collection of common web spidering routines
-description: |
+description:
   ronin-web-spider is a collection of common web spidering routines using the
   spidr gem.
 
