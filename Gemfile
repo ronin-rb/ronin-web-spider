@@ -16,10 +16,11 @@ group :development do
   gem 'sinatra',        '~> 1.0'
   gem 'simplecov',      '~> 0.20'
 
-  gem 'kramdown',      '~> 2.0'
   gem 'kramdown-man',  '~> 0.1'
 
-  gem 'yard',           '~> 0.9'
+  gem 'kramdown',        '~> 2.0'
+  gem 'redcarpet',       platform: :mri
+  gem 'yard',            '~> 0.9'
   gem 'yard-spellcheck', require: false
 
   gem 'dead_end', require: false
