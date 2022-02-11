@@ -25,83 +25,76 @@ module Ronin
   module Web
     module Spider
       #
-      # Extends [Spidr::Agent](http://rubydoc.info/gems/spidr/Agent) with
-      # [Ronin::UI::Output::Helpers](http://rubydoc.info/gems/ronin/Ronin/UI/Output/Helpers).
+      # Extends [Spidr::Agent](http://rubydoc.info/gems/spidr/Agent).
       #
       class Agent < Spidr::Agent
 
         #
         # Creates a new Spider object.
         #
-        # @param [Hash] options
-        #   Additional options.
-        #
-        # @option options [Hash] :proxy (Web.proxy)
+        # @param [Spidr::Proxy, Hash, URI::HTTP, String, nil] proxy
         #   The proxy to use while spidering.
         #
-        # @option options [String] :user_agent (Web.user_agent)
+        # @param [String, nil] user_agent
         #   The User-Agent string to send.
         #
-        # @option options [String] :referer
+        # @param [Hash{Symbol => Object}] kwargs
+        #   Additional keyword arguments for `Spidr::Agent#initialize`.
+        #
+        # @option kwargs [String, nil] :referer
         #   The referer URL to send.
         #
-        # @option options [Integer] :delay (0)
+        # @option kwargs [Integer] :delay (0)
         #   Duration in seconds to pause between spidering each link.
         #
-        # @option options [Array] :schemes (['http', 'https'])
+        # @option kwargs [Array] :schemes (['http', 'https'])
         #   The list of acceptable URI schemes to visit.
         #   The `https` scheme will be ignored if `net/https` cannot be
         #   loaded.
         #
-        # @option options [String] :host
+        # @option kwargs [String, nil] :host
         #   The host-name to visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :hosts
+        # @option kwargs [Array<String, Regexp, Proc>] :hosts
         #   The patterns which match the host-names to visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :ignore_hosts
+        # @option kwargs [Array<String, Regexp, Proc>] :ignore_hosts
         #   The patterns which match the host-names to not visit.
         #
-        # @option options [Array<Integer, Regexp, Proc>] :ports
+        # @option kwargs [Array<Integer, Regexp, Proc>] :ports
         #   The patterns which match the ports to visit.
         #
-        # @option options [Array<Integer, Regexp, Proc>] :ignore_ports
+        # @option kwargs [Array<Integer, Regexp, Proc>] :ignore_ports
         #   The patterns which match the ports to not visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :links
+        # @option kwargs [Array<String, Regexp, Proc>] :links
         #   The patterns which match the links to visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :ignore_links
+        # @option kwargs [Array<String, Regexp, Proc>] :ignore_links
         #   The patterns which match the links to not visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :exts
+        # @option kwargs [Array<String, Regexp, Proc>] :exts
         #   The patterns which match the URI path extensions to visit.
         #
-        # @option options [Array<String, Regexp, Proc>] :ignore_exts
+        # @option kwargs [Array<String, Regexp, Proc>] :ignore_exts
         #   The patterns which match the URI path extensions to not visit.
         #
-        # @option options [Boolean] :verbose (true)
-        #   Specifies whether every URL will be printed.
+        # @yield [agent]
+        #   If a block is given, it will be passed the newly created web spider
+        #   agent.
         #
-        # @yield [spider]
-        #   If a block is given, it will be passed the newly created spider.
+        # @yieldparam [Agent] agent
+        #   The newly created web spider agent.
         #
-        # @yieldparam [Spider] spider
-        #   The newly created spider.
-        #
-        # @see http://spidr.rubyforge.org/docs/classes/Spidr/Agent.html
+        # @see https://rubydoc.info/gems/spidr/Spidr/Agent#initialize-instance_method
         #
         # @api public
         #
-        def initialize(options={})
-          options = {
-            proxy:      Web.proxy,
-            user_agent: Web.user_agent
-          }.merge(options)
-
-          super(options)
-
-          yield self if block_given?
+        def initialize(proxy:      ENV['RONIN_HTTP_PROXY'],
+                       user_agent: ENV['RONIN_HTTP_USER_AGENT'],
+                       **kwargs,
+                       &block)
+          super(proxy: proxy, user_agent: user_agent, **kwargs,&block)
         end
 
       end
