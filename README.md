@@ -18,10 +18,45 @@ ronin-web-spider is a collection of common web spidering routines using the
 
 ## Features
 
-## Synopsis
+## Examples
 
-```shell
-$ ronin-web-spider
+Spider a host:
+
+```ruby
+require 'ronin/web/spider'
+
+Ronin::Web::Spider.spider(host: 'www.example.com') do |agent|
+  agent.every_page do |page|
+    # ...
+  end
+end
+```
+
+Spider a domain:
+
+```ruby
+Ronin::Web::Spider.spider(domain: 'example.com') do |agent|
+  agent.every_page do |page|
+    # ...
+  end
+end
+```
+
+Spider a website:
+
+```ruby
+Ronin::Web::Spider.spider(site: 'https://www.example.com/index.html') do |agent|
+  agent.every_page do |page|
+    # ...
+  end
+end
+```
+
+Get all URLs for a host/domain/website:
+
+```ruby
+Ronin::Web::Spider.urls(domain: 'example.com')
+# => [<URI::HTTP http://example.com/>, ...]
 ```
 
 ## Requirements
