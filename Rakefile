@@ -29,6 +29,3 @@ task :default => :spec
 require 'yard'
 YARD::Rake::YardocTask.new
 task :docs => :yard
-
-require 'kramdown/man/task'
-Kramdown::Man::Task.new

@@ -16,8 +16,6 @@ group :development do
   gem 'sinatra',        '~> 1.0'
   gem 'simplecov',      '~> 0.20'
 
-  gem 'kramdown-man',  '~> 0.1'
-
   gem 'kramdown',        '~> 2.0'
   gem 'redcarpet',       platform: :mri
   gem 'yard',            '~> 0.9'
