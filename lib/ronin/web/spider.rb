@@ -325,7 +325,7 @@ module Ronin
       def self.urls(like: nil, **kwargs)
         urls = Set.new
 
-        agent = spider(**kwargs) do |agent|
+        spider(**kwargs) do |agent|
           if like
             agent.every_url_like(like) do |url|
               yield url if block_given?
