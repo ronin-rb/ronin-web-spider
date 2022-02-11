@@ -311,6 +311,103 @@ describe Ronin::Web::Spider do
     end
   end
 
+  describe ".every_url" do
+    context "when given the site: keyword argument" do
+      include_context "Example Site"
+
+      it "must spider the site and return all spidered URLs" do
+        expect { |b|
+          subject.every_url(site: url, &b)
+        }.to yield_successive_args(
+          URI("http://#{host}/entry-point"),
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        )
+      end
+    end
+
+    context "when given the host: keyword argument" do
+      include_context "Example Host"
+
+      it "must spider the host and return all spidered URLs" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_url(host: host, &b)
+        }.to yield_successive_args(
+          URI("http://#{host}/"),
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        )
+      end
+    end
+
+    context "when given the domain: keyword argument" do
+      include_context "Example Domain"
+
+      it "must spider the domain and return all spidered URLs" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_url(domain: domain, &b)
+        }.to yield_successive_args(
+          URI("http://#{domain}/"),
+          URI("http://#{domain}/link1"),
+          URI("http://#{subdomain}/subdomain-link"),
+          URI("http://#{domain}/link2")
+        )
+      end
+    end
+  end
+
+  describe ".every_url_like" do
+    let(:pattern) { /link/ }
+
+    context "when given the site: keyword argument" do
+      include_context "Example Site"
+
+      it "must spider the site and return all spidered URLs" do
+        expect { |b|
+          subject.every_url_like(pattern, site: url, &b)
+        }.to yield_successive_args(
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        )
+      end
+    end
+
+    context "when given the host: keyword argument" do
+      include_context "Example Host"
+
+      it "must spider the host and return all spidered URLs" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_url_like(pattern, host: host, &b)
+        }.to yield_successive_args(
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        )
+      end
+    end
+
+    context "when given the domain: keyword argument" do
+      include_context "Example Domain"
+
+      it "must spider the domain and return all spidered URLs" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_url_like(pattern, domain: domain, &b)
+        }.to yield_successive_args(
+          URI("http://#{domain}/link1"),
+          URI("http://#{subdomain}/subdomain-link"),
+          URI("http://#{domain}/link2")
+        )
+      end
+    end
+  end
+
   describe ".urls" do
     context "when no block is given" do
       context "when given the site: keyword argument" do
