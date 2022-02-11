@@ -420,6 +420,17 @@ describe Ronin::Web::Spider do
             URI("http://#{host}/link2")
           ]
         end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            expect(subject.urls(site: url, like: like)).to be == Set[
+              URI("http://#{host}/link1"),
+              URI("http://#{host}/link2")
+            ]
+          end
+        end
       end
 
       context "when given the host: keyword argument" do
@@ -433,6 +444,19 @@ describe Ronin::Web::Spider do
             URI("http://#{host}/link1"),
             URI("http://#{host}/link2")
           ]
+        end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            # XXX: for some reason Set#== was returning false, so convert to an
+            # Array
+            expect(subject.urls(host: host, like: like).to_a).to be == [
+              URI("http://#{host}/link1"),
+              URI("http://#{host}/link2")
+            ]
+          end
         end
       end
 
@@ -448,6 +472,20 @@ describe Ronin::Web::Spider do
             URI("http://#{subdomain}/subdomain-link"),
             URI("http://#{domain}/link2")
           ]
+        end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            # XXX: for some reason Set#== was returning false, so convert to an
+            # Array
+            expect(subject.urls(domain: domain, like: like).to_a).to be == [
+              URI("http://#{domain}/link1"),
+              URI("http://#{subdomain}/subdomain-link"),
+              URI("http://#{domain}/link2")
+            ]
+          end
         end
       end
     end
@@ -465,6 +503,19 @@ describe Ronin::Web::Spider do
             URI("http://#{host}/link2")
           )
         end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            expect { |b|
+              subject.urls(site: url, like: like, &b)
+            }.to yield_successive_args(
+              URI("http://#{host}/link1"),
+              URI("http://#{host}/link2")
+            )
+          end
+        end
       end
 
       context "when given the host: keyword argument" do
@@ -480,6 +531,21 @@ describe Ronin::Web::Spider do
             URI("http://#{host}/link1"),
             URI("http://#{host}/link2")
           )
+        end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            # XXX: for some reason Set#== was returning false, so convert to an
+            # Array
+            expect { |b|
+              subject.urls(host: host, like: like, &b)
+            }.to yield_successive_args(
+              URI("http://#{host}/link1"),
+              URI("http://#{host}/link2")
+            )
+          end
         end
       end
 
@@ -497,6 +563,22 @@ describe Ronin::Web::Spider do
             URI("http://#{subdomain}/subdomain-link"),
             URI("http://#{domain}/link2")
           )
+        end
+
+        context "and the like: keyword argument is given" do
+          let(:like) { /link/ }
+
+          it "must spider the site and filter the URLs with the pattern" do
+            # XXX: for some reason Set#== was returning false, so convert to an
+            # Array
+            expect { |b|
+              subject.urls(domain: domain, like: like, &b)
+            }.to yield_successive_args(
+              URI("http://#{domain}/link1"),
+              URI("http://#{subdomain}/subdomain-link"),
+              URI("http://#{domain}/link2")
+            )
+          end
         end
       end
     end

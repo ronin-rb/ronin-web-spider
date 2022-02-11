@@ -269,6 +269,9 @@ module Ronin
       #
       # Spiders a website and returns the list of visited URLs.
       #
+      # @param [Regexp, String, nil] like
+      #   The optional pattern to filter URLs by.
+      #
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments for {spider}.
       #
@@ -307,6 +310,9 @@ module Ronin
       #   Spider.urls(site: 'https://example.com')
       #   # => [<URI::HTTPS https://example.com/>, ...]
       #
+      # @example filter the URLs with a pattern:
+      #   Spider.urls(host: 'www.example.com', like: /\.php$/)
+      #
       # @example with a block:
       #   Spider.urls(host: 'www.example.com') do |url|
       #     puts url
@@ -314,12 +320,24 @@ module Ronin
       #   # http://example.com/
       #   # ...
       #
-      def self.urls(**kwargs,&block)
+      def self.urls(like: nil, **kwargs)
+        urls = Set.new
+
         agent = spider(**kwargs) do |agent|
-          agent.every_url(&block) if block
+          if like
+            agent.every_url_like(like) do |url|
+              yield url if block_given?
+              urls << url
+            end
+          else
+            agent.every_url do |url|
+              yield url if block_given?
+              urls << url
+            end
+          end
         end
 
-        return agent.history
+        return urls
       end
     end
   end
