@@ -26,11 +26,23 @@ Spider a host:
 require 'ronin/web/spider'
 
 Ronin::Web::Spider.host('www.example.com') do |agent|
+  agent.ever_url do |url|
+    # ...
+  end
+
+  agent.every_url_like(/cgi-bin/) do |url|
+    # ...
+  end
+
   agent.every_page do |page|
     # ...
   end
 end
 ```
+
+See [Spidr::Agent] documentation for more agent methods.
+
+[Spidr::Agent]: https://rubydoc.info/gems/spidr/Spidr/Agent
 
 Spider a domain:
 
