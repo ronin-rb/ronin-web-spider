@@ -31,8 +31,8 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to start spidering at.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `Spidr.start_at`.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -41,10 +41,13 @@ module Ronin
       # @yieldparam [Agent] agent
       #   The newly created agent.
       #
+      # @return [Agent]
+      #   The web spider agent, after it has completed spidering.
+      #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#start_at-class_method
       #
-      def self.start_at(url,options={},&block)
-        Agent.start_at(url,options,&block)
+      def self.start_at(url,**kwargs,&block)
+        Agent.start_at(url,**kwargs,&block)
       end
 
       #
@@ -53,8 +56,8 @@ module Ronin
       # @param [String] name
       #   The host-name to spider.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `Spidr.host`.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -63,10 +66,13 @@ module Ronin
       # @yieldparam [Agent] agent
       #   The newly created agent.
       #
+      # @return [Agent]
+      #   The web spider agent, after it has completed spidering.
+      #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#host-class_method
       #
-      def self.host(name,options={},&block)
-        Agent.host(name,options,&block)
+      def self.host(name,**kwargs,&block)
+        Agent.host(name,**kwargs,&block)
       end
 
       #
@@ -75,8 +81,8 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The web-site to spider.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `Spidr.site`.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -85,10 +91,13 @@ module Ronin
       # @yieldparam [Agent] agent
       #   The newly created agent.
       #
+      # @return [Agent]
+      #   The web spider agent, after it has completed spidering.
+      #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#site-class_method
       #
-      def self.site(url,options={},&block)
-        Agent.site(url,options,&block)
+      def self.site(url,**kwargs,&block)
+        Agent.site(url,**kwargs,&block)
       end
 
       #
@@ -97,8 +106,8 @@ module Ronin
       # @param [String] name
       #   The top-level domain to spider.
       #
-      # @param [Hash] options
-      #   Additional options.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `Spidr.domain`.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -107,10 +116,113 @@ module Ronin
       # @yieldparam [Agent] agent
       #   The newly created agent.
       #
+      # @return [Agent]
+      #   The web spider agent, after it has completed spidering.
+      #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#domain-class_method
       #
-      def self.domain(name,options={},&block)
-        Agent.domain(name,options,&block)
+      def self.domain(name,**kwargs,&block)
+        Agent.domain(name,**kwargs,&block)
+      end
+
+      #
+      # Spiders a host, a domain, or a website.
+      #
+      # @param [String] host
+      #   The specific hostname to spider.
+      #
+      # @param [String] domain
+      #   The domain name to spider.
+      #
+      # @param [String] site
+      #   The website to spider.
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `Spidr.host`, `Spidr.domain`,
+      #   `Spidr.site`.
+      #
+      # @return [Agent]
+      #   The web spider agent, after it has completed spidering.
+      #
+      # @raise [ArgumentError]
+      #   Must specify the `host:`, `domain:`, or `site:` keyword argument.
+      #
+      # @example
+      #   Spider.spider(host: 'example.com')
+      #
+      # @example
+      #   Spider.spider(domain: 'example.com')
+      #
+      # @example
+      #   Spider.spider(site: 'https://example.com/')
+      #
+      # @see host
+      # @see domain
+      # @see site
+      #
+      def self.spider(host: nil, domain: nil, site: nil, **kwargs, &block)
+        if    host   then host(host,**kwargs,&block)
+        elsif domain then domain(domain,**kwargs,&block)
+        elsif site   then site(site,**kwargs,&block)
+        else
+          raise(ArgumentError,"must specify host:, domain:, or site: argument")
+        end
+      end
+
+      #
+      # Spiders a website and returns the list of visited URLs.
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {spider}.
+      #
+      # @option kwargs [String] :host
+      #   The specific hostname to spider.
+      #
+      # @option kwargs [String] :domain
+      #   The domain name to spider.
+      #
+      # @option kwargs [URL::HTTP, String] :site
+      #   The website to spider.
+      #
+      # @yield [url]
+      #   If a block is given, it will be passed every URL that will be
+      #   spidered.
+      #
+      # @yieldparam [URI::HTTP] url
+      #   A URL that will be spidered.
+      #
+      # @return [Set<URI::HTTP>]
+      #   The list of URLs that were visited.
+      #
+      # @raise [ArgumentError]
+      #   At least one of the `host:`, `domain:`, or `site:` keyword arguments
+      #   must be given.
+      #
+      # @example
+      #   Spider.urls(host: 'www.example.com')
+      #   # => [<URI::HTTP http://www.example.com/>, ...]
+      #
+      # @example
+      #   Spider.urls(domain: 'example.com')
+      #   # => [<URI::HTTP http://example.com/>, ...]
+      #
+      # @example
+      #   Spider.urls(site: 'https://example.com')
+      #   # => [<URI::HTTPS https://example.com/>, ...]
+      #
+      # @example with a block:
+      #   Spider.urls(host: 'www.example.com') do |url|
+      #     puts url
+      #   end
+      #   # http://example.com/
+      #   # ...
+      #
+      def self.urls(**kwargs,&block)
+        agent = spider(**kwargs) do |agent|
+          agent.every_url(&block) if block
+        end
+
+        return agent.history
       end
     end
   end
