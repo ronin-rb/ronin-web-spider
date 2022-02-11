@@ -22,6 +22,8 @@
 require 'ronin/web/spider/agent'
 require 'ronin/web/spider/version'
 
+require 'set'
+
 module Ronin
   module Web
     module Spider
