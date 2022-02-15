@@ -269,6 +269,52 @@ module Ronin
       end
 
       #
+      # Spiders a website and passes every page to the given block.
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {spider}.
+      #
+      # @option kwargs [String] :host
+      #   The specific hostname to spider.
+      #
+      # @option kwargs [String] :domain
+      #   The domain name to spider.
+      #
+      # @option kwargs [URL::HTTP, String] :site
+      #   The website to spider.
+      #
+      # @yield [page]
+      #   the given block will be passed every page that is visited.
+      #
+      # @yieldparam [Spidr::Page] page
+      #   A page that has been visited.
+      #
+      # @raise [ArgumentError]
+      #   At least one of the `host:`, `domain:`, or `site:` keyword arguments
+      #   must be given.
+      #
+      # @example Spider a host:
+      #   Spider.every_page(host: 'www.example.com') do |page|
+      #     puts page.url
+      #   end
+      #
+      # @example Spider a domain:
+      #   Spider.every_page(domain: 'example.com') do |page|
+      #     puts page.url
+      #   end
+      #
+      # @example Spider a website:
+      #   Spider.every_page(site: 'https://example.com/') do |page|
+      #     puts pageurl
+      #   end
+      #
+      def self.every_page(**kwargs,&block)
+        spider(**kwargs) do |agent|
+          agent.every_page(&block)
+        end
+      end
+
+      #
       # Spiders a website and returns the list of visited URLs.
       #
       # @param [Regexp, String, nil] like

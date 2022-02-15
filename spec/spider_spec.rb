@@ -408,6 +408,55 @@ describe Ronin::Web::Spider do
     end
   end
 
+  describe ".every_page" do
+    context "when given the site: keyword argument" do
+      include_context "Example Site"
+
+      it "must spider the site and yield every spidered page" do
+        expect { |b|
+          subject.every_page(site: url, &b)
+        }.to yield_successive_args(
+          Spidr::Page,
+          Spidr::Page,
+          Spidr::Page
+        )
+      end
+    end
+
+    context "when given the host: keyword argument" do
+      include_context "Example Host"
+
+      it "must spider the host and yield every spidered page" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_page(host: host, &b)
+        }.to yield_successive_args(
+          Spidr::Page,
+          Spidr::Page,
+          Spidr::Page
+        )
+      end
+    end
+
+    context "when given the domain: keyword argument" do
+      include_context "Example Domain"
+
+      it "must spider the domain and yield every spidered page" do
+        # XXX: for some reason Set#== was returning false, so convert to an
+        # Array
+        expect { |b|
+          subject.every_page(domain: domain, &b)
+        }.to yield_successive_args(
+          Spidr::Page,
+          Spidr::Page,
+          Spidr::Page,
+          Spidr::Page
+        )
+      end
+    end
+  end
+
   describe ".urls" do
     context "when no block is given" do
       context "when given the site: keyword argument" do
