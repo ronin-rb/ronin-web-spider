@@ -237,7 +237,7 @@ module Ronin
       #   The website to spider.
       #
       # @yield [url]
-      #   the wiven block will be passed every matching URL that will be
+      #   The given block will be passed every matching URL that will be
       #   spidered.
       #
       # @yieldparam [URI::HTTP] url
