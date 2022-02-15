@@ -25,7 +25,7 @@ module Ronin
   module Web
     module Spider
       #
-      # Extends [Spidr::Agent](http://rubydoc.info/gems/spidr/Agent).
+      # Extends [Spidr::Agent](https://rubydoc.info/gems/spidr/Agent).
       #
       class Agent < Spidr::Agent
 
