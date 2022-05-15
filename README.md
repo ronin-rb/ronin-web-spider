@@ -30,7 +30,7 @@ Ronin::Web::Spider.spider(host: 'www.example.com') do |agent|
     # ...
   end
 
-  agent.every_url_like(/cgi-bin/) do |url|
+  agent.every_url_like(/.../) do |url|
     # ...
   end
 
@@ -42,7 +42,7 @@ end
 
 See [Spidr::Agent] documentation for more agent methods.
 
-[Spidr::Agent]: https://rubydoc.info/gems/spidr/Spidr/Agent
+[Spidr::Agent]: 
 
 Spider a domain:
 
@@ -73,7 +73,7 @@ Ronin::Web::Spider.urls(domain: 'example.com')
 
 ## Requirements
 
-* [Ruby] >= 2.7.0
+* [Ruby] >= 3.0.0
 * [spidr] ~> 0.6
 
 ## Install
