@@ -30,7 +30,7 @@ Ronin::Web::Spider.host('www.example.com') do |agent|
     # ...
   end
 
-  agent.every_url_like(/cgi-bin/) do |url|
+  agent.every_url_like(/.../) do |url|
     # ...
   end
 
@@ -66,7 +66,7 @@ end
 
 ## Requirements
 
-* [Ruby] >= 2.7.0
+* [Ruby] >= 3.0.0
 * [spidr] ~> 0.6
 
 ## Install
