@@ -218,6 +218,50 @@ module Ronin
       end
 
       #
+      # Spiders a website and returns the list of visited URLs.
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {spider}.
+      #
+      # @option kwargs [String] :host
+      #   The specific hostname to spider.
+      #
+      # @option kwargs [String] :domain
+      #   The domain name to spider.
+      #
+      # @option kwargs [URL::HTTP, String] :site
+      #   The website to spider.
+      #
+      # @return [Array<URI::HTTP>]
+      #   The list of URLs that were visited.
+      #
+      # @raise [ArgumentError]
+      #   At least one of the `host:`, `domain:`, or `site:` keyword arguments
+      #   must be given.
+      #
+      # @example
+      #   Spider.urls(host: 'www.example.com')
+      #   # => [<URI::HTTP http://www.example.com/>, ...]
+      #
+      # @example
+      #   Spider.urls(domain: 'example.com')
+      #   # => [<URI::HTTP http://example.com/>, ...]
+      #
+      # @example
+      #   Spider.urls(site: 'https://example.com')
+      #   # => [<URI::HTTPS https://example.com/>, ...]
+      #
+      def self.urls(**kwargs)
+        urls = []
+
+        every_url(**kwargs) do |url|
+          urls << url
+        end
+
+        return urls
+      end
+
+      #
       # Spiders a website and passes every URL that matches the pattern to the
       # given block.
       #
@@ -269,6 +313,51 @@ module Ronin
       end
 
       #
+      # Spiders a website and returns the list of visited URL that matches the
+      # pattern.
+      #
+      # @param [String, Regexp] pattern
+      #   The pattern to match URLs against.
+      #
+      # @option kwargs [String] :host
+      #   The specific hostname to spider.
+      #
+      # @option kwargs [String] :domain
+      #   The domain name to spider.
+      #
+      # @option kwargs [URL::HTTP, String] :site
+      #   The website to spider.
+      #
+      # @return [Array<URI::HTTP>]
+      #   The list of matching URLs that were visited.
+      #
+      # @raise [ArgumentError]
+      #   At least one of the `host:`, `domain:`, or `site:` keyword arguments
+      #   must be given.
+      #
+      # @example
+      #   Spider.urls_like(/\.html$/, host: 'www.example.com')
+      #   # => [<URI::HTTP http://www.example.com/index.html>, ...]
+      #
+      # @example
+      #   Spider.urls_like(/\.html$/, domain: 'example.com')
+      #   # => [<URI::HTTP http://example.com/index.html>, ...]
+      #
+      # @example
+      #   Spider.urls_like(/\.html$/, site: 'https://example.com')
+      #   # => [<URI::HTTPS https://example.com/index.html>, ...]
+      #
+      def self.urls_like(pattern,**kwargs)
+        urls = []
+
+        every_url_like(pattern,**kwargs) do |url|
+          urls << url
+        end
+
+        return urls
+      end
+
+      #
       # Spiders a website and passes every page to the given block.
       #
       # @param [Hash{Symbol => Object}] kwargs
@@ -312,80 +401,6 @@ module Ronin
         spider(**kwargs) do |agent|
           agent.every_page(&block)
         end
-      end
-
-      #
-      # Spiders a website and returns the list of visited URLs.
-      #
-      # @param [Regexp, String, nil] like
-      #   The optional pattern to filter URLs by.
-      #
-      # @param [Hash{Symbol => Object}] kwargs
-      #   Additional keyword arguments for {spider}.
-      #
-      # @option kwargs [String] :host
-      #   The specific hostname to spider.
-      #
-      # @option kwargs [String] :domain
-      #   The domain name to spider.
-      #
-      # @option kwargs [URL::HTTP, String] :site
-      #   The website to spider.
-      #
-      # @yield [url]
-      #   If a block is given, it will be passed every URL that will be
-      #   spidered.
-      #
-      # @yieldparam [URI::HTTP] url
-      #   A URL that will be spidered.
-      #
-      # @return [Set<URI::HTTP>]
-      #   The list of URLs that were visited.
-      #
-      # @raise [ArgumentError]
-      #   At least one of the `host:`, `domain:`, or `site:` keyword arguments
-      #   must be given.
-      #
-      # @example
-      #   Spider.urls(host: 'www.example.com')
-      #   # => [<URI::HTTP http://www.example.com/>, ...]
-      #
-      # @example
-      #   Spider.urls(domain: 'example.com')
-      #   # => [<URI::HTTP http://example.com/>, ...]
-      #
-      # @example
-      #   Spider.urls(site: 'https://example.com')
-      #   # => [<URI::HTTPS https://example.com/>, ...]
-      #
-      # @example filter the URLs with a pattern:
-      #   Spider.urls(host: 'www.example.com', like: /\.php$/)
-      #
-      # @example with a block:
-      #   Spider.urls(host: 'www.example.com') do |url|
-      #     puts url
-      #   end
-      #   # http://example.com/
-      #   # ...
-      #
-      def self.urls(like: nil, **kwargs)
-        urls = Set.new
-
-        spider(**kwargs) do |agent|
-          if like
-            agent.every_url_like(like) do |url|
-              yield url if block_given?
-              urls << url
-            end
-          else
-            agent.every_url do |url|
-              yield url if block_given?
-              urls << url
-            end
-          end
-        end
-
-        return urls
       end
     end
   end

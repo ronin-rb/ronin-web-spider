@@ -458,176 +458,83 @@ describe Ronin::Web::Spider do
   end
 
   describe ".urls" do
-    context "when no block is given" do
-      context "when given the site: keyword argument" do
-        include_context "Example Site"
+    context "when given the site: keyword argument" do
+      include_context "Example Site"
 
-        it "must spider the site and return all spidered URLs" do
-          expect(subject.urls(site: url)).to be == Set[
-            URI("http://#{host}/entry-point"),
-            URI("http://#{host}/link1"),
-            URI("http://#{host}/link2")
-          ]
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            expect(subject.urls(site: url, like: like)).to be == Set[
-              URI("http://#{host}/link1"),
-              URI("http://#{host}/link2")
-            ]
-          end
-        end
-      end
-
-      context "when given the host: keyword argument" do
-        include_context "Example Host"
-
-        it "must spider the host and return all spidered URLs" do
-          # XXX: for some reason Set#== was returning false, so convert to an
-          # Array
-          expect(subject.urls(host: host).to_a).to be == [
-            URI("http://#{host}/"),
-            URI("http://#{host}/link1"),
-            URI("http://#{host}/link2")
-          ]
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            # XXX: for some reason Set#== was returning false, so convert to an
-            # Array
-            expect(subject.urls(host: host, like: like).to_a).to be == [
-              URI("http://#{host}/link1"),
-              URI("http://#{host}/link2")
-            ]
-          end
-        end
-      end
-
-      context "when given the domain: keyword argument" do
-        include_context "Example Domain"
-
-        it "must spider the domain and return all spidered URLs" do
-          # XXX: for some reason Set#== was returning false, so convert to an
-          # Array
-          expect(subject.urls(domain: domain).to_a).to be == [
-            URI("http://#{domain}/"),
-            URI("http://#{domain}/link1"),
-            URI("http://#{subdomain}/subdomain-link"),
-            URI("http://#{domain}/link2")
-          ]
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            # XXX: for some reason Set#== was returning false, so convert to an
-            # Array
-            expect(subject.urls(domain: domain, like: like).to_a).to be == [
-              URI("http://#{domain}/link1"),
-              URI("http://#{subdomain}/subdomain-link"),
-              URI("http://#{domain}/link2")
-            ]
-          end
-        end
+      it "must spider the site and return all spidered URLs" do
+        expect(subject.urls(site: url)).to be == [
+          URI("http://#{host}/entry-point"),
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        ]
       end
     end
 
-    context "when a block is given" do
-      context "when given the site: keyword argument" do
-        include_context "Example Site"
+    context "when given the host: keyword argument" do
+      include_context "Example Host"
 
-        it "must spider the site and return all spidered URLs" do
-          expect { |b|
-            subject.urls(site: url, &b)
-          }.to yield_successive_args(
-            URI("http://#{host}/entry-point"),
-            URI("http://#{host}/link1"),
-            URI("http://#{host}/link2")
-          )
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            expect { |b|
-              subject.urls(site: url, like: like, &b)
-            }.to yield_successive_args(
-              URI("http://#{host}/link1"),
-              URI("http://#{host}/link2")
-            )
-          end
-        end
+      it "must spider the host and return all spidered URLs" do
+        expect(subject.urls(host: host)).to be == [
+          URI("http://#{host}/"),
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        ]
       end
+    end
 
-      context "when given the host: keyword argument" do
-        include_context "Example Host"
+    context "when given the domain: keyword argument" do
+      include_context "Example Domain"
 
-        it "must spider the host and return all spidered URLs" do
-          # XXX: for some reason Set#== was returning false, so convert to an
-          # Array
-          expect { |b|
-            subject.urls(host: host, &b)
-          }.to yield_successive_args(
-            URI("http://#{host}/"),
-            URI("http://#{host}/link1"),
-            URI("http://#{host}/link2")
-          )
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            # XXX: for some reason Set#== was returning false, so convert to an
-            # Array
-            expect { |b|
-              subject.urls(host: host, like: like, &b)
-            }.to yield_successive_args(
-              URI("http://#{host}/link1"),
-              URI("http://#{host}/link2")
-            )
-          end
-        end
+      it "must spider the domain and return all spidered URLs" do
+        expect(subject.urls(domain: domain)).to be == [
+          URI("http://#{domain}/"),
+          URI("http://#{domain}/link1"),
+          URI("http://#{subdomain}/subdomain-link"),
+          URI("http://#{domain}/link2")
+        ]
       end
+    end
+  end
 
-      context "when given the domain: keyword argument" do
-        include_context "Example Domain"
+  describe "#urls_like" do
+    context "when given the site: keyword argument" do
+      include_context "Example Site"
 
-        it "must spider the domain and return all spidered URLs" do
-          # XXX: for some reason Set#== was returning false, so convert to an
-          # Array
-          expect { |b|
-            subject.urls(domain: domain, &b)
-          }.to yield_successive_args(
-            URI("http://#{domain}/"),
+      let(:pattern) { /link/ }
+
+      it "must spider the site and filter the URLs with the pattern" do
+        expect(subject.urls_like(pattern, site: url)).to be == [
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        ]
+      end
+    end
+
+    context "when given the host: keyword argument" do
+      include_context "Example Host"
+
+      let(:pattern) { /link/ }
+
+      it "must spider the site and filter the URLs with the pattern" do
+        expect(subject.urls_like(pattern,host: host)).to be == [
+          URI("http://#{host}/link1"),
+          URI("http://#{host}/link2")
+        ]
+      end
+    end
+
+    context "when given the domain: keyword argument" do
+      include_context "Example Domain"
+
+      context "and the like: keyword argument is given" do
+        let(:pattern) { /link/ }
+
+        it "must spider the site and filter the URLs with the pattern" do
+          expect(subject.urls_like(pattern, domain: domain)).to be == [
             URI("http://#{domain}/link1"),
             URI("http://#{subdomain}/subdomain-link"),
             URI("http://#{domain}/link2")
-          )
-        end
-
-        context "and the like: keyword argument is given" do
-          let(:like) { /link/ }
-
-          it "must spider the site and filter the URLs with the pattern" do
-            # XXX: for some reason Set#== was returning false, so convert to an
-            # Array
-            expect { |b|
-              subject.urls(domain: domain, like: like, &b)
-            }.to yield_successive_args(
-              URI("http://#{domain}/link1"),
-              URI("http://#{subdomain}/subdomain-link"),
-              URI("http://#{domain}/link2")
-            )
-          end
+          ]
         end
       end
     end
