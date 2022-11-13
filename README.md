@@ -68,6 +68,7 @@ end
 
 * [Ruby] >= 3.0.0
 * [spidr] ~> 0.6
+* [ronin-support] ~> 1.0
 
 ## Install
 
@@ -117,3 +118,4 @@ along with ronin-web-spider.  If not, see <https://www.gnu.org/licenses/>.
 
 [Ruby]: https://www.ruby-lang.org
 [spidr]: https://github.com/postmodern/spidr#readme
+[ronin-support]: https://github.com/ronin-rb/ronin-support#readme

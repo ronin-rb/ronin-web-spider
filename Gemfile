@@ -7,6 +7,9 @@ gem 'jruby-openssl',	'~> 0.7', platforms: :jruby
 gem 'spidr',  '~> 0.7', github: 'postmodern/spidr',
                         branch: '0.7.0'
 
+gem 'ronin-support',	       '~> 1.0', github: "ronin-rb/ronin-support",
+                                       branch: '1.0.0'
+
 group :development do
   gem 'rake'
   gem 'rubygems-tasks', '~> 0.2'
