@@ -2,7 +2,9 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'jruby-openssl',	'~> 0.7', platforms: :jruby
+platform :jruby do
+  gem 'jruby-openssl',	'~> 0.7'
+end
 
 gem 'spidr',  '~> 0.7', github: 'postmodern/spidr',
                         branch: '0.7.0'
@@ -25,6 +27,6 @@ group :development do
   gem 'yard-spellcheck', require: false
 
   gem 'dead_end',        require: false
-  gem 'sord',            require: false
-  gem 'stackprof',       require: false
+  gem 'sord',            require: false, platform: :mri
+  gem 'stackprof',       require: false, platform: :mri
 end
