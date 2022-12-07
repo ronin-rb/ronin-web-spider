@@ -95,6 +95,31 @@ module Ronin
           super(proxy: proxy, user_agent: user_agent, **kwargs,&block)
         end
 
+        # The visited host names.
+        #
+        # @return [Set<String>, nil]
+        attr_reader :visited_hosts
+
+        #
+        # Passes every unique host name that the agent visits to the given
+        # block and populates {#hosts}.
+        #
+        # @yield [host]
+        #
+        # @yieldparam [String] host
+        #
+        def every_host
+          @visited_hosts ||= Set.new
+
+          every_page do |page|
+            host = page.url.host
+
+            if @visited_hosts.add?(host)
+              yield host
+            end
+          end
+        end
+
       end
     end
   end

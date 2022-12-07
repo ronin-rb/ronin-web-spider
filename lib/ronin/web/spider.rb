@@ -29,8 +29,8 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to start spidering at.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments. See {Agent#initialize}.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -41,8 +41,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#start_at-class_method
       #
-      def self.start_at(url,options={},&block)
-        Agent.start_at(url,options,&block)
+      def self.start_at(url,**kwargs,&block)
+        Agent.start_at(url,**kwargs,&block)
       end
 
       #
@@ -51,8 +51,8 @@ module Ronin
       # @param [String] name
       #   The host-name to spider.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments. See {Agent#initialize}.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -63,8 +63,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#host-class_method
       #
-      def self.host(name,options={},&block)
-        Agent.host(name,options,&block)
+      def self.host(name,**kwargs,&block)
+        Agent.host(name,**kwargs,&block)
       end
 
       #
@@ -73,8 +73,8 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The web-site to spider.
       #
-      # @param [Hash] options
-      #   Additional options. See {Agent#initialize}.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments. See {Agent#initialize}.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -85,8 +85,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#site-class_method
       #
-      def self.site(url,options={},&block)
-        Agent.site(url,options,&block)
+      def self.site(url,**kwargs,&block)
+        Agent.site(url,**kwargs,&block)
       end
 
       #
@@ -95,8 +95,8 @@ module Ronin
       # @param [String] name
       #   The top-level domain to spider.
       #
-      # @param [Hash] options
-      #   Additional options.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments. See {Agent#initialize}.
       #
       # @yield [agent]
       #   If a block is given, it will be passed the newly created agent
@@ -107,8 +107,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#domain-class_method
       #
-      def self.domain(name,options={},&block)
-        Agent.domain(name,options,&block)
+      def self.domain(name,**kwargs,&block)
+        Agent.domain(name,**kwargs,&block)
       end
     end
   end
