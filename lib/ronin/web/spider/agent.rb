@@ -120,6 +120,23 @@ module Ronin
           end
         end
 
+        #
+        # Pass every favicon from every page to the given block.
+        #
+        # @yield [favicon]
+        #   The given block will be passed every encountered `.ico` file.
+        #
+        # @yieldparam [Spidr::Page] favicon
+        #   An encountered `.ico` file.
+        #
+        # @see https://rubydoc.info/gems/spidr/Spidr/Page
+        #
+        def every_favicon
+          every_page do |page|
+            yield page if page.icon?
+          end
+        end
+
       end
     end
   end

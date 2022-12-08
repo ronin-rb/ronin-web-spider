@@ -111,4 +111,84 @@ describe Ronin::Web::Spider::Agent do
       expect(subject.visited_hosts.entries).to eq([host1, host2])
     end
   end
+  
+  describe "#every_favicon" do
+    module TestAgentEveryHost
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <link rel="favicon" href="/favicon1.ico" type="image/x-icon"/>
+            </head>
+            <body>
+              <a href="/link1">link1</a>
+              <a href="http://host2.example.com/offsite-link">offsite link</a>
+              <a href="/link2">link2</a>
+            </body>
+          </html>
+          HTML
+        end
+
+        get '/favicon1.ico' do
+          content_type 'image/x-icon'
+
+          "favicon1"
+        end
+
+        get '/favicon2.ico' do
+          content_type 'image/vnd.microsoft.icon'
+
+          "favicon2"
+        end
+
+        get '/link1' do
+          '<html><body>got here</body></html>'
+        end
+
+        get '/link2' do
+          <<~HTML
+          <html>
+            <head>
+              <link rel="favicon" href="/favicon2.ico" type="image/x-icon"/>
+            </head>
+            <body>got here</body>
+          </html>
+          HTML
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryHost::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield Spidr::Page objects for each encountered .ico file" do
+      yielded_favicons = []
+
+      subject.every_favicon do |favicon|
+        yielded_favicons << favicon
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_favicons).to_not be_empty
+
+      expect(yielded_favicons[0]).to be_kind_of(Spidr::Page)
+      expect(yielded_favicons[0].content_type).to eq('image/x-icon')
+      expect(yielded_favicons[0].url).to eq(URI("http://#{host}/favicon1.ico"))
+
+      expect(yielded_favicons[1]).to be_kind_of(Spidr::Page)
+      expect(yielded_favicons[1].content_type).to eq('image/vnd.microsoft.icon')
+      expect(yielded_favicons[1].url).to eq(URI("http://#{host}/favicon2.ico"))
+    end
+  end
 end
