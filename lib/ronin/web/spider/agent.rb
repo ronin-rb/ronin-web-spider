@@ -198,6 +198,24 @@ module Ronin
           end
         end
 
+        #
+        # Passes every JavaScript string value to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript string with the quote
+        #   marks removed.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a JavaScript string.
+        #
+        def every_javascript_string
+          every_javascript do |js|
+            js.scan(Support::Text::Patterns::STRING) do |js_string|
+              yield Support::Encoding::JS.unquote(js_string)
+            end
+          end
+        end
+
       end
     end
   end

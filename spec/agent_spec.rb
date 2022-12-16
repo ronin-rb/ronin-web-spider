@@ -245,4 +245,68 @@ describe Ronin::Web::Spider::Agent do
       expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
     end
   end
+
+  describe "#every_javascript_string" do
+    module TestAgentEveryJavaScriptString
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <script type="text/javascript" src="/javascript1.js"></script>
+              <script type="text/javascript">
+              var str3 = "string #3";
+              var str4 = 'string #4';
+              </script>
+            </head>
+            <body>
+              <a href="/link1">link1</a>
+              <a href="http://host2.example.com/offsite-link">offsite link</a>
+              <a href="/link2">link2</a>
+            </body>
+          </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          <<~JS
+          var str1 = "string #1";
+          var str2 = 'string #2';
+          JS
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryJavaScriptString::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every JavaScript string from any <script> tag" do
+      yielded_javascript_strings = []
+
+      subject.every_javascript_string do |string|
+        yielded_javascript_strings << string
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_javascript_strings).to match_array(
+        [
+          'string #1',
+          'string #2',
+          'string #3',
+          'string #4'
+        ]
+      )
+    end
+  end
 end
