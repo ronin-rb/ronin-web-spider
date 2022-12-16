@@ -216,6 +216,8 @@ module Ronin
           end
         end
 
+        alias every_js_string every_javascript_string
+
       end
     end
   end
