@@ -240,6 +240,21 @@ module Ronin
 
         alias every_js_string every_javascript_string
 
+        #
+        # Passes every JavaScript comment to the given block.
+        #
+        # @yield [comment]
+        #   The given block will be passed each JavaScript comment.
+        #
+        # @yieldparam [String] comment
+        #   The contents of a JavaScript comment.
+        #
+        def every_javascript_comment(&block)
+          every_javascript do |js|
+            js.scan(Support::Text::Patterns::JAVASCRIPT_COMMENT,&block)
+          end
+        end
+
       end
     end
   end

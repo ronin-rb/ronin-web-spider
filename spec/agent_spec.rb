@@ -358,4 +358,74 @@ describe Ronin::Web::Spider::Agent do
       )
     end
   end
+
+  describe "#every_javascript_comment" do
+    module TestAgentEveryJavaScriptComment
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <script type="text/javascript" src="/javascript1.js"></script>
+              <script type="text/javascript">
+              // comment 3
+              var str3 = "string #3";
+              /*
+                 comment 4
+               */
+              var str4 = 'string #4';
+              </script>
+            </head>
+            <body>
+              <a href="/link1">link1</a>
+              <a href="http://host2.example.com/offsite-link">offsite link</a>
+              <a href="/link2">link2</a>
+            </body>
+          </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          <<~JS
+          // comment 1
+          var str1 = "string #1";
+          /* comment 2 */
+          var str2 = 'string #2';
+          JS
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryJavaScriptComment::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every JavaScript comment from any <script> tag" do
+      yielded_javascript_comments = []
+
+      subject.every_javascript_comment do |comment|
+        yielded_javascript_comments << comment
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_javascript_comments).to match_array(
+        [
+          "// comment 1\n",
+          "/* comment 2 */",
+          "// comment 3\n",
+          "/*\n       comment 4\n     */"
+        ]
+      )
+    end
+  end
 end
