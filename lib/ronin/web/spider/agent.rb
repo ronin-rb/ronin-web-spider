@@ -174,6 +174,28 @@ module Ronin
         end
 
         #
+        # Passes every non-empty HTML comment to the given block.
+        #
+        # @yield [comment]
+        #   The given block will be passevery HTML comment.
+        #
+        # @yieldparam [String] comment
+        #   The HTML comment inner text, with leading and trailing whitespace
+        #   stripped.
+        #
+        def every_html_comment
+          every_html_page do |page|
+            page.doc.xpath('//comment()').each do |comment|
+              comment_text = comment.inner_text.strip
+
+              unless comment_text.empty?
+                yield comment_text
+              end
+            end
+          end
+        end
+
+        #
         # Passes every piece of JavaScript to the given block.
         #
         # @yield [js]

@@ -195,6 +195,55 @@ describe Ronin::Web::Spider::Agent do
     end
   end
 
+  describe "#every_html_comment" do
+    module TestAgentEveryHTMLComment
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <!-- comment 1 -->
+            </head>
+            <!-- -->
+            <body>
+              <!-- comment 2 -->
+            </body>
+          </html>
+          HTML
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryHTMLComment::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every non-empty/non-whitespace HTML comment String" do
+      yielded_comments = []
+
+      subject.every_html_comment do |comment|
+        yielded_comments << comment
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_comments).to match_array(
+        [
+          'comment 1',
+          'comment 2'
+        ]
+      )
+    end
+  end
+
   describe "#every_javascript" do
     module TestAgentEveryJavaScript
       class TestApp < Sinatra::Base
