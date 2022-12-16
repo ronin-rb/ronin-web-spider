@@ -428,4 +428,79 @@ describe Ronin::Web::Spider::Agent do
       )
     end
   end
+
+  describe "#every_comment" do
+    module TestAgentEveryComment
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <!-- HTML comment 1 -->
+              <script type="text/javascript" src="/javascript1.js"></script>
+              <script type="text/javascript">
+              // JavaScript comment 3
+              var str3 = "string #3";
+              /*
+                 JavaScript comment 4
+               */
+              var str4 = 'string #4';
+              </script>
+            </head>
+            <!-- -->
+            <body>
+              <!-- HTML comment 2 -->
+              <a href="/link1">link1</a>
+              <a href="http://host2.example.com/offsite-link">offsite link</a>
+              <a href="/link2">link2</a>
+            </body>
+          </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          <<~JS
+          // JavaScript comment 1
+          var str1 = "string #1";
+          /* JavaScript comment 2 */
+          var str2 = 'string #2';
+          JS
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryComment::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every HTML and JavaScript comment from any <script> tag" do
+      yielded_comments = []
+
+      subject.every_comment do |comment|
+        yielded_comments << comment
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_comments).to match_array(
+        [
+          "HTML comment 1",
+          "// JavaScript comment 1\n",
+          "/* JavaScript comment 2 */",
+          "// JavaScript comment 3\n",
+          "/*\n       JavaScript comment 4\n     */",
+          "HTML comment 2"
+        ]
+      )
+    end
+  end
 end

@@ -257,6 +257,23 @@ module Ronin
 
         alias every_js_comment every_javascript_comment
 
+        #
+        # Passes every HTML and JavaScript comment to the given block.
+        #
+        # @yield [comment]
+        #   The given block will be passed each HTML or JavaScript comment.
+        #
+        # @yieldparam [String] comment
+        #   The contents of a HTML or JavaScript comment.
+        #
+        # @see #every_html_comment
+        # @see #every_javascript_comment
+        #
+        def every_comment(&block)
+          every_html_comment(&block)
+          every_javascript_comment(&block)
+        end
+
       end
     end
   end
