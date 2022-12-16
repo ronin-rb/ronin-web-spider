@@ -31,7 +31,7 @@ module Ronin
       #
       #     Ronin::Web::Spider::Archive.open('path/to/root') do |archive|
       #       Ronin::Web::Spider.every_page(host: 'example.com') do |page|
-      #         archive.save(page.url,page.body)
+      #         archive.write(page.url,page.body)
       #       end
       #     end
       #

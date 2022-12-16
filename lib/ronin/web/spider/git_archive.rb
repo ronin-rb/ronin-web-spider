@@ -37,7 +37,7 @@ module Ronin
       #     Ronin::Web::Spider::GitArchive.open('path/to/root') do |archive|
       #       archive.commit("Updated #{Date.today}") do
       #         Ronin::Web::Spider.every_page(host: 'example.com') do |page|
-      #           archive.save(page.url,page.body)
+      #           archive.write(page.url,page.body)
       #         end
       #       end
       #     end
