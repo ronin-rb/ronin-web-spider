@@ -111,6 +111,9 @@ describe Ronin::Web::Spider::Agent do
       expect(subject.visited_hosts.entries).to eq([host1, host2])
     end
   end
+
+  # TODO: need to figure out how to test #every_cert using webmock.
+  describe "#every_cert"
   
   describe "#every_favicon" do
     module TestAgentEveryHost

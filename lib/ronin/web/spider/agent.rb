@@ -19,6 +19,10 @@
 
 require 'spidr/agent'
 
+require 'ronin/support/crypto/cert'
+require 'ronin/support/text/patterns'
+require 'ronin/support/encoding/js'
+
 module Ronin
   module Web
     module Spider
@@ -120,6 +124,38 @@ module Ronin
           end
         end
 
+        # All certificates encountered while spidering.
+        #
+        # @return [Array<Ronin::Support::Crypto::Cert>]
+        attr_reader :collected_certs
+
+        #
+        # Passes every unique TLS certificate to the given block and populates
+        # {#certs}.
+        #
+        # @yield [cert]
+        #
+        # @yieldparam [Ronin::Support::Crypto::Cert]
+        #
+        def every_cert
+          @collected_certs ||= []
+
+          serials = Set.new
+
+          every_page do |page|
+            if page.url.scheme == 'https'
+              cert = sessions[page.url].peer_cert
+
+              if serials.add?(cert.serial)
+                cert = Support::Crypto::Cert(cert)
+
+                @collected_certs << cert
+                yield cert
+              end
+            end
+          end
+        end
+
         #
         # Pass every favicon from every page to the given block.
         #
@@ -134,6 +170,46 @@ module Ronin
         def every_favicon
           every_page do |page|
             yield page if page.icon?
+          end
+        end
+
+        #
+        # Passes every piece of JavaScript to the given block.
+        #
+        # @yield [js]
+        #   The given block will be passed every piece of JavaScript source.
+        #
+        # @yieldparam [String] js
+        #   The JavaScript source code.
+        #
+        def every_javascript
+          # yield inner text of every `<script type="text/javascript">` tag.
+          every_html_page do |page|
+            page.xpath('//script[@type="text/javascript"]').each do |script|
+              yield script.inner_text
+            end
+          end
+
+          every_javascript_page do |page|
+            yield page.body
+          end
+        end
+
+        #
+        # Passes every JavaScript string value to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript string with the quote
+        #   marks removed.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a JavaScript string.
+        #
+        def every_javascript_string
+          every_javascript do |js|
+            js.scan(Support::Text::Patterns::STRING) do |js_string|
+              yield Support::Encoders::JS.unquote(js_string)
+            end
           end
         end
 
