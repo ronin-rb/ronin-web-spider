@@ -183,33 +183,18 @@ module Ronin
         #   The JavaScript source code.
         #
         def every_javascript
-          # yield inner text of every `<script type="text/javascript">` tag.
+          # yield inner text of every `<script type="text/javascript">` tag
+          # and every `.js` URL.
           every_html_page do |page|
-            page.xpath('//script[@type="text/javascript"]').each do |script|
-              yield script.inner_text
+            page.doc.xpath('//script[@type="text/javascript"]').each do |script|
+              unless script.inner_text.empty?
+                yield script.inner_text
+              end
             end
           end
 
           every_javascript_page do |page|
             yield page.body
-          end
-        end
-
-        #
-        # Passes every JavaScript string value to the given block.
-        #
-        # @yield [string]
-        #   The given block will be passed each JavaScript string with the quote
-        #   marks removed.
-        #
-        # @yieldparam [String] string
-        #   The parsed contents of a JavaScript string.
-        #
-        def every_javascript_string
-          every_javascript do |js|
-            js.scan(Support::Text::Patterns::STRING) do |js_string|
-              yield Support::Encoders::JS.unquote(js_string)
-            end
           end
         end
 

@@ -194,4 +194,55 @@ describe Ronin::Web::Spider::Agent do
       expect(yielded_favicons[1].url).to eq(URI("http://#{host}/favicon2.ico"))
     end
   end
+
+  describe "#every_javascript" do
+    module TestAgentEveryJavaScript
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+          <html>
+            <head>
+              <script type="text/javascript" src="/javascript1.js"></script>
+              <script type="text/javascript">javascript2</script>
+            </head>
+            <body>
+              <a href="/link1">link1</a>
+              <a href="http://host2.example.com/offsite-link">offsite link</a>
+              <a href="/link2">link2</a>
+            </body>
+          </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          "javascript1"
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryJavaScript::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield both the contents of .js files and inline <script> tags" do
+      yielded_javascripts = []
+
+      subject.every_javascript do |js|
+        yielded_javascripts << js
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
+    end
+  end
 end
