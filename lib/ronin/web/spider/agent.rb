@@ -255,6 +255,8 @@ module Ronin
           end
         end
 
+        alias every_js_comment every_javascript_comment
+
       end
     end
   end
