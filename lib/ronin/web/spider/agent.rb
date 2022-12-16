@@ -20,7 +20,7 @@
 require 'spidr/agent'
 
 require 'ronin/support/crypto/cert'
-require 'ronin/support/text/patterns'
+require 'ronin/support/text/patterns/source_code'
 require 'ronin/support/encoding/js'
 
 module Ronin
