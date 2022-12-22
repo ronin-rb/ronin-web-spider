@@ -19,6 +19,7 @@
 
 require 'spidr/agent'
 
+require 'ronin/support/network/http'
 require 'ronin/support/crypto/cert'
 require 'ronin/support/text/patterns/source_code'
 require 'ronin/support/encoding/js'
@@ -34,7 +35,7 @@ module Ronin
         #
         # Creates a new Spider object.
         #
-        # @param [Spidr::Proxy, Hash, URI::HTTP, String, nil] proxy
+        # @param [Spidr::Proxy, Addressable::URI, URI::HTTP, Hash, String, nil] proxy
         #   The proxy to use while spidering.
         #
         # @param [String, nil] user_agent
@@ -92,10 +93,29 @@ module Ronin
         #
         # @api public
         #
-        def initialize(proxy:      ENV['RONIN_HTTP_PROXY'],
-                       user_agent: ENV['RONIN_HTTP_USER_AGENT'],
+        def initialize(proxy:      Support::Network::HTTP.proxy,
+                       user_agent: Support::Network::HTTP.user_agent,
                        **kwargs,
                        &block)
+          proxy = case proxy
+                  when Addressable::URI
+                    Spidr::Proxy.new(
+                      host:     proxy.host,
+                      port:     proxy.port,
+                      user:     proxy.user,
+                      password: proxy.password
+                    )
+                  else
+                    proxy
+                  end
+
+          user_agent = case user_agent
+                       when Symbol
+                         Support::Network::HTTP::UserAgents[user_agent]
+                       else
+                         user_agent
+                       end
+
           super(proxy: proxy, user_agent: user_agent, **kwargs,&block)
         end
 

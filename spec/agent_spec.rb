@@ -6,13 +6,12 @@ require 'sinatra/base'
 
 describe Ronin::Web::Spider::Agent do
   describe "#initialize" do
-    context "when ENV['RONIN_HTTP_PROXY'] is set" do
+    context "when Ronin::Support::Network::HTTP.proxy is set" do
       let(:proxy_host) { 'example.com' }
       let(:proxy_port) { 8080 }
+      let(:proxy_uri)  { URI::HTTP.build(host: proxy_host, port: proxy_port) }
 
-      before do
-        ENV['RONIN_HTTP_PROXY'] = "http://#{proxy_host}:#{proxy_port}"
-      end
+      before { Ronin::Support::Network::HTTP.proxy = proxy_uri }
 
       it "must parse ENV['RONIN_HTTP_USER_AGENT'] and set #proxy" do
         expect(subject.proxy).to be_kind_of(Spidr::Proxy)
@@ -20,19 +19,99 @@ describe Ronin::Web::Spider::Agent do
         expect(subject.proxy.port).to eq(proxy_port)
       end
 
-      after { ENV.delete('RONIN_HTTP_PROXY') }
+      after { Ronin::Support::Network::HTTP.proxy = nil }
     end
 
-    context "when ENV['RONIN_HTTP_USER_AGENT'] is set" do
+    context "when Ronin::Support::Network::HTTP.user_agent is set" do
       let(:user_agent) { 'Foo Bar' }
 
-      before { ENV['RONIN_HTTP_USER_AGENT'] = user_agent }
+      before { Ronin::Support::Network::HTTP.user_agent = user_agent }
 
       it "must default #user_agent to ENV['RONIN_HTTP_USER_AGENT']" do
         expect(subject.user_agent).to eq(user_agent)
       end
 
-      after { ENV.delete('RONIN_HTTP_USER_AGENT') }
+      after { Ronin::Support::Network::HTTP.user_agent = nil }
+    end
+
+    context "when given the proxy: keyword argument" do
+      let(:proxy_host) { 'example.com' }
+      let(:proxy_port) { 8080 }
+
+      context "and it's an Addressable::URI" do
+        let(:proxy) { Addressable::URI.new(host: proxy_host, port: proxy_port) }
+
+        subject { described_class.new(proxy: proxy) }
+
+        it "must convert it to a Spidr::Proxy object" do
+          expect(subject.proxy).to be_kind_of(Spidr::Proxy)
+          expect(subject.proxy.host).to eq(proxy_host)
+          expect(subject.proxy.port).to eq(proxy_port)
+        end
+      end
+
+      context "and it's an URI::HTTP" do
+        let(:proxy) { URI::HTTP.build(host: proxy_host, port: proxy_port) }
+
+        subject { described_class.new(proxy: proxy) }
+
+        it "must convert it to a Spidr::Proxy object" do
+          expect(subject.proxy).to be_kind_of(Spidr::Proxy)
+          expect(subject.proxy.host).to eq(proxy_host)
+          expect(subject.proxy.port).to eq(proxy_port)
+        end
+      end
+
+      context "and it's a Hash" do
+        let(:proxy) do
+          {host: proxy_host, port: proxy_port}
+        end
+
+        subject { described_class.new(proxy: proxy) }
+
+        it "must convert it to a Spidr::Proxy object" do
+          expect(subject.proxy).to be_kind_of(Spidr::Proxy)
+          expect(subject.proxy.host).to eq(proxy_host)
+          expect(subject.proxy.port).to eq(proxy_port)
+        end
+      end
+
+      context "and it's a String" do
+        let(:proxy) { "http://#{proxy_host}:#{proxy_port}" }
+
+        subject { described_class.new(proxy: proxy) }
+
+        it "must convert it to a Spidr::Proxy object" do
+          expect(subject.proxy).to be_kind_of(Spidr::Proxy)
+          expect(subject.proxy.host).to eq(proxy_host)
+          expect(subject.proxy.port).to eq(proxy_port)
+        end
+      end
+    end
+
+    context "when given the user_agent: keyword argument" do
+      context "and it's a String" do
+        let(:user_agent) { "test user-agent" }
+
+        subject { described_class.new(user_agent: user_agent) }
+
+        it "must set the #user_agent" do
+          expect(subject.user_agent).to eq(user_agent)
+        end
+      end
+
+      context "and it's a Symbol" do
+        let(:user_agent) { :chrome_linux }
+        let(:expected_user_agent) do
+          Ronin::Support::Network::HTTP::UserAgents[user_agent]
+        end
+
+        subject { described_class.new(user_agent: user_agent) }
+
+        it "must map the Symbol to one of Ronin::Support::Network::HTTP::UserAgents" do
+          expect(subject.user_agent).to eq(expected_user_agent)
+        end
+      end
     end
 
     it "must default #visited_hosts to nil" do
