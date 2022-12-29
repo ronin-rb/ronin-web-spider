@@ -56,7 +56,7 @@ module Ronin
         # Creates the archive and the archive's directory, if it already does
         # not exist.
         #
-        # @param [String] path
+        # @param [String] root
         #   The path to the new archive.
         #
         # @yield [archive]
