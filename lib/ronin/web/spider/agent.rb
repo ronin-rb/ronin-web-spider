@@ -126,7 +126,7 @@ module Ronin
 
         #
         # Passes every unique host name that the agent visits to the given
-        # block and populates {#hosts}.
+        # block and populates {#visited_hosts}.
         #
         # @yield [host]
         #
@@ -151,7 +151,7 @@ module Ronin
 
         #
         # Passes every unique TLS certificate to the given block and populates
-        # {#certs}.
+        # {#collected_certs}.
         #
         # @yield [cert]
         #
