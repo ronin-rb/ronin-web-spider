@@ -3,6 +3,7 @@
 * Extracted and refactored from [ronin-web](https://github.com/ronin-rb/ronin-web/tree/v0.3.0.rc1).
 * Relicensed as LGPL-3.0.
 * Initial release:
+  * Requires `ruby` >= 3.0.0.
   * Built on top of the battle tested and versatile [spidr] gem.
   * Provides additional callback methods:
     * `every_host` - yields every unique host name that's spidered.
