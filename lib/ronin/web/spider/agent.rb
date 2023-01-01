@@ -240,6 +240,8 @@ module Ronin
           end
         end
 
+        alias every_js every_javascript
+
         #
         # Passes every JavaScript string value to the given block.
         #
