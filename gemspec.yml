@@ -20,7 +20,7 @@ metadata:
 required_ruby_version: ">= 3.0.0"
 
 dependencies:
-  spidr: ~> 0.6
+  spidr: ~> 0.7
   ronin-support: ~> 1.0
 
 development_dependencies:

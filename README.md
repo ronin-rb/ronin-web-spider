@@ -67,7 +67,7 @@ end
 ## Requirements
 
 * [Ruby] >= 3.0.0
-* [spidr] ~> 0.6
+* [spidr] ~> 0.7
 * [ronin-support] ~> 1.0
 
 ## Install
