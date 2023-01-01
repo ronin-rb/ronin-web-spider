@@ -1,7 +1,7 @@
 #
 # ronin-web-spider - A collection of common web spidering routines.
 #
-# Copyright (c) 2006-2022 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2006-2023 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # ronin-web-spider is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
