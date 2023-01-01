@@ -1,5 +1,6 @@
 ### 0.1.0 / 2023-XX-XX
 
+* Extracted and refactored from [ronin-web](https://github.com/ronin-rb/ronin-web/tree/v0.3.0.rc1).
 * Initial release:
   * Built on top of the battle tested and versatile [spidr] gem.
   * Provides additional callback methods:
