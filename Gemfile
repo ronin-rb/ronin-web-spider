@@ -8,8 +8,8 @@ end
 
 # gem 'spidr',  '~> 0.7', github: 'postmodern/spidr'
 
-gem 'ronin-support',	       '~> 1.0', github: "ronin-rb/ronin-support",
-                                       branch: '1.0.0'
+# gem 'ronin-support',	       '~> 1.0', github: "ronin-rb/ronin-support",
+#                                        branch: 'main'
 
 group :development do
   gem 'rake'
