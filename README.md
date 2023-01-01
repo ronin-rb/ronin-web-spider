@@ -33,6 +33,8 @@ ronin-web-spider is a collection of common web spidering routines using the
   * `every_javascript_comment` - yields every JavaScript comment.
   * `every_comment` - yields every HTML or JavaScript comment.
 * Supports archiving spidered pages to a directory or git repository.
+* Has 94% documentation coverage.
+* Has 94% test coverage.
 
 ## Examples
 
