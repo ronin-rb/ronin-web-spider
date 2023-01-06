@@ -132,6 +132,11 @@ module Ronin
         #
         # @yieldparam [String] host
         #
+        # @example
+        #   spider.every_host do |host|
+        #     puts "Spidring #{host} ..."
+        #   end
+        #
         def every_host
           @visited_hosts ||= Set.new
 
@@ -156,6 +161,11 @@ module Ronin
         # @yield [cert]
         #
         # @yieldparam [Ronin::Support::Crypto::Cert]
+        #
+        # @example
+        #   spider.every_cert do |cert|
+        #     puts "Discovered new cert for #{cert.subject.command_name}, #{cert.subject_alt_name}"
+        #   end
         #
         def every_cert
           @collected_certs ||= []
@@ -185,6 +195,11 @@ module Ronin
         # @yieldparam [Spidr::Page] favicon
         #   An encountered `.ico` file.
         #
+        # @example
+        #   spider.every_favicon do |page|
+        #     # ...
+        #   end
+        #
         # @see https://rubydoc.info/gems/spidr/Spidr/Page
         #
         def every_favicon
@@ -202,6 +217,11 @@ module Ronin
         # @yieldparam [String] comment
         #   The HTML comment inner text, with leading and trailing whitespace
         #   stripped.
+        #
+        # @example
+        #   spider.every_html_comment do |comment|
+        #     puts comment
+        #   end
         #
         def every_html_comment
           every_html_page do |page|
@@ -223,6 +243,11 @@ module Ronin
         #
         # @yieldparam [String] js
         #   The JavaScript source code.
+        #
+        # @example
+        #   spider.every_javascript do |js|
+        #     puts js
+        #   end
         #
         def every_javascript
           # yield inner text of every `<script type="text/javascript">` tag
@@ -252,6 +277,11 @@ module Ronin
         # @yieldparam [String] string
         #   The parsed contents of a JavaScript string.
         #
+        # @example
+        #   spider.every_javascript_string do |str|
+        #    puts str
+        #  end
+        #
         def every_javascript_string
           every_javascript do |js|
             js.scan(Support::Text::Patterns::STRING) do |js_string|
@@ -271,6 +301,11 @@ module Ronin
         # @yieldparam [String] comment
         #   The contents of a JavaScript comment.
         #
+        # @example
+        #   spider.every_javascript_comment do |comment|
+        #     puts comment
+        #   end
+        #
         def every_javascript_comment(&block)
           every_javascript do |js|
             js.scan(Support::Text::Patterns::JAVASCRIPT_COMMENT,&block)
@@ -287,6 +322,11 @@ module Ronin
         #
         # @yieldparam [String] comment
         #   The contents of a HTML or JavaScript comment.
+        #
+        # @example
+        #   spider.every_comment do |comment|
+        #     puts comment
+        #   end
         #
         # @see #every_html_comment
         # @see #every_javascript_comment
