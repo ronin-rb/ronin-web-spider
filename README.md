@@ -43,41 +43,190 @@ Spider a host:
 ```ruby
 require 'ronin/web/spider'
 
-Ronin::Web::Spider.host('www.example.com') do |agent|
-  agent.ever_url do |url|
-    # ...
-  end
+Ronin::Web::Spider.start_at('http://tenderlovemaking.com/') do |agent|
+  # ...
+end
+```
 
-  agent.every_url_like(/.../) do |url|
-    # ...
-  end
+Spider a host:
 
-  agent.every_page do |page|
-    # ...
+```ruby
+Ronin::Web::Spider.host('solnic.eu') do |agent|
+  # ...
+end
+```
+
+Spider a domain (and any sub-domains):
+
+```ruby
+Ronin::Web::Spider.domain('ruby-lang.org') do |agent|
+  # ...
+end
+```
+
+Spider a site:
+
+```ruby
+Ronin::Web::Spider.site('http://www.rubyflow.com/') do |agent|
+  # ...
+end
+```
+
+Spider multiple hosts:
+
+```ruby
+Ronin::Web::Spider.start_at('http://company.com/', hosts: ['company.com', /host[\d]+\.company\.com/]) do |agent|
+  # ...
+end
+```
+
+Do not spider certain links:
+
+```ruby
+Ronin::Web::Spider.site('http://company.com/', ignore_links: [%{^/blog/}]) do |agent|
+  # ...
+end
+```
+
+Do not spider links on certain ports:
+
+```ruby
+Ronin::Web::Spider.site('http://company.com/', ignore_ports: [8000, 8010, 8080]) do |agent|
+  # ...
+end
+```
+
+Do not spider links blacklisted in robots.txt:
+
+```ruby
+Ronin::Web::Spider.site('http://company.com/', robots: true) do |agent|
+  # ...
+end
+```
+
+Print out visited URLs:
+
+```ruby
+Ronin::Web::Spider.site('http://www.rubyinside.com/') do |spider|
+  spider.every_url { |url| puts url }
+end
+```
+
+Build a URL map of a site:
+
+```ruby
+url_map = Hash.new { |hash,key| hash[key] = [] }
+
+Ronin::Web::Spider.site('http://intranet.com/') do |spider|
+  spider.every_link do |origin,dest|
+    url_map[dest] << origin
   end
 end
 ```
 
-See [Spidr::Agent] documentation for more agent methods.
-
-[Spidr::Agent]: https://rubydoc.info/gems/spidr/Spidr/Agent
-
-Spider a domain:
+Print out the URLs that could not be requested:
 
 ```ruby
-Ronin::Web::Spider.domain('example.com') do |agent|
-  agent.every_page do |page|
-    # ...
+Ronin::Web::Spider.site('http://company.com/') do |spider|
+  spider.every_failed_url { |url| puts url }
+end
+```
+
+Finds all pages which have broken links:
+
+```ruby
+url_map = Hash.new { |hash,key| hash[key] = [] }
+
+spider = Ronin::Web::Spider.site('http://intranet.com/') do |spider|
+  spider.every_link do |origin,dest|
+    url_map[dest] << origin
+  end
+end
+
+spider.failures.each do |url|
+  puts "Broken link #{url} found in:"
+
+  url_map[url].each { |page| puts "  #{page}" }
+end
+```
+
+Search HTML and XML pages:
+
+```ruby
+Ronin::Web::Spider.site('http://company.com/') do |spider|
+  spider.every_page do |page|
+    puts ">>> #{page.url}"
+
+    page.search('//meta').each do |meta|
+      name = (meta.attributes['name'] || meta.attributes['http-equiv'])
+      value = meta.attributes['content']
+
+      puts "  #{name} = #{value}"
+    end
   end
 end
 ```
 
-Spider a website:
+Print out the titles from every page:
 
 ```ruby
-Ronin::Web::Spider.site('https://www.example.com/index.html') do |agent|
-  agent.every_page do |page|
-    # ...
+Ronin::Web::Spider.site('https://www.ruby-lang.org/') do |spider|
+  spider.every_html_page do |page|
+    puts page.title
+  end
+end
+```
+
+Print out every HTTP redirect:
+
+```ruby
+Ronin::Web::Spider.host('company.com') do |spider|
+  spider.every_redirect_page do |page|
+    puts "#{page.url} -> #{page.headers['Location']}"
+  end
+end
+```
+
+Find what kinds of web servers a host is using, by accessing the headers:
+
+```ruby
+servers = Set[]
+
+Ronin::Web::Spider.host('company.com') do |spider|
+  spider.all_headers do |headers|
+    servers << headers['server']
+  end
+end
+```
+
+Pause the spider on a forbidden page:
+
+```ruby
+Ronin::Web::Spider.host('company.com') do |spider|
+  spider.every_forbidden_page do |page|
+    spider.pause!
+  end
+end
+```
+
+Skip the processing of a page:
+
+```ruby
+Ronin::Web::Spider.host('company.com') do |spider|
+  spider.every_missing_page do |page|
+    spider.skip_page!
+  end
+end
+```
+
+Skip the processing of links:
+
+```ruby
+Ronin::Web::Spider.host('company.com') do |spider|
+  spider.every_url do |url|
+    if url.path.split('/').find { |dir| dir.to_i > 1000 }
+      spider.skip_link!
+    end
   end
 end
 ```
