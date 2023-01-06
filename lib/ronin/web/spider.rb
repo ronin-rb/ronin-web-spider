@@ -321,6 +321,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#start_at-class_method
       #
+      # @api public
+      #
       def self.start_at(url,**kwargs,&block)
         Agent.start_at(url,**kwargs,&block)
       end
@@ -342,6 +344,8 @@ module Ronin
       #   The newly created agent.
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#host-class_method
+      #
+      # @api public
       #
       def self.host(name,**kwargs,&block)
         Agent.host(name,**kwargs,&block)
@@ -365,6 +369,8 @@ module Ronin
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#site-class_method
       #
+      # @api public
+      #
       def self.site(url,**kwargs,&block)
         Agent.site(url,**kwargs,&block)
       end
@@ -386,6 +392,8 @@ module Ronin
       #   The newly created agent.
       #
       # @see https://rubydoc.info/gems/spidr/Spidr/Agent#domain-class_method
+      #
+      # @api public
       #
       def self.domain(name,**kwargs,&block)
         Agent.domain(name,**kwargs,&block)
