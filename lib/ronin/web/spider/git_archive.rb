@@ -30,8 +30,8 @@ module Ronin
       #
       # Spider a host and archive every web page to a Git repository:
       #
-      #     require 'ronin/web/spider/git_archive'
       #     require 'ronin/web/spider'
+      #     require 'ronin/web/spider/git_archive'
       #     require 'date'
       #     
       #     Ronin::Web::Spider::GitArchive.open('path/to/root') do |archive|
