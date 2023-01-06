@@ -231,6 +231,86 @@ Ronin::Web::Spider.host('company.com') do |spider|
 end
 ```
 
+Detect when a new host name is spidered:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_host do |host|
+    puts "Spidring #{host} ..."
+  end
+end
+```
+
+Detect when a new SSL/TLS certificate is encountered:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_cert do |cert|
+    puts "Discovered new cert for #{cert.subject.command_name}, #{cert.subject_alt_name}"
+  end
+end
+```
+
+Print the MD5 checksum of every `favicon.ico` file:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_favicon do |page|
+    puts "#{page.url}: #{page.body.md5}"
+  end
+end
+```
+
+Print every HTML comment:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_html_comment do |comment|
+    puts comment
+  end
+end
+```
+
+Print all JavaScript source code:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_javascript do |js|
+    puts js
+  end
+end
+```
+
+Print every JavaScript string literal:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_javascript_string do |str|
+    puts str
+  end
+end
+```
+
+Print every JavaScript comment:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_javascript_comment do |comment|
+    puts comment
+  end
+end
+```
+
+Print every HTML and JavaScript comment:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_comment do |comment|
+    puts comment
+  end
+end
+```
+
 ## Requirements
 
 * [Ruby] >= 3.0.0
