@@ -122,6 +122,8 @@ module Ronin
         # The visited host names.
         #
         # @return [Set<String>, nil]
+        #
+        # @api public
         attr_reader :visited_hosts
 
         #
@@ -136,6 +138,8 @@ module Ronin
         #   spider.every_host do |host|
         #     puts "Spidring #{host} ..."
         #   end
+        #
+        # @api public
         #
         def every_host
           @visited_hosts ||= Set.new
@@ -152,6 +156,8 @@ module Ronin
         # All certificates encountered while spidering.
         #
         # @return [Array<Ronin::Support::Crypto::Cert>]
+        #
+        # @api public
         attr_reader :collected_certs
 
         #
@@ -166,6 +172,8 @@ module Ronin
         #   spider.every_cert do |cert|
         #     puts "Discovered new cert for #{cert.subject.command_name}, #{cert.subject_alt_name}"
         #   end
+        #
+        # @api public
         #
         def every_cert
           @collected_certs ||= []
@@ -202,6 +210,8 @@ module Ronin
         #
         # @see https://rubydoc.info/gems/spidr/Spidr/Page
         #
+        # @api public
+        #
         def every_favicon
           every_page do |page|
             yield page if page.icon?
@@ -222,6 +232,8 @@ module Ronin
         #   spider.every_html_comment do |comment|
         #     puts comment
         #   end
+        #
+        # @api public
         #
         def every_html_comment
           every_html_page do |page|
@@ -248,6 +260,8 @@ module Ronin
         #   spider.every_javascript do |js|
         #     puts js
         #   end
+        #
+        # @api public
         #
         def every_javascript
           # yield inner text of every `<script type="text/javascript">` tag
@@ -282,6 +296,8 @@ module Ronin
         #    puts str
         #  end
         #
+        # @api public
+        #
         def every_javascript_string
           every_javascript do |js|
             js.scan(Support::Text::Patterns::STRING) do |js_string|
@@ -305,6 +321,8 @@ module Ronin
         #   spider.every_javascript_comment do |comment|
         #     puts comment
         #   end
+        #
+        # @api public
         #
         def every_javascript_comment(&block)
           every_javascript do |js|
@@ -330,6 +348,8 @@ module Ronin
         #
         # @see #every_html_comment
         # @see #every_javascript_comment
+        #
+        # @api public
         #
         def every_comment(&block)
           every_html_comment(&block)
