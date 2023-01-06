@@ -311,6 +311,35 @@ Ronin::Web::Spider.domain('example.com') do |spider|
 end
 ```
 
+Spider a host and archive every web page:
+
+```ruby
+require 'ronin/web/spider'
+require 'ronin/web/spider/archive'
+
+Ronin::Web::Spider::Archive.open('path/to/root') do |archive|
+  Ronin::Web::Spider.every_page(host: 'example.com') do |page|
+    archive.write(page.url,page.body)
+  end
+end
+```
+
+Spider a host and archive every web page to a Git repository:
+
+```ruby
+require 'ronin/web/spider/git_archive'
+require 'ronin/web/spider'
+require 'date'
+
+Ronin::Web::Spider::GitArchive.open('path/to/root') do |archive|
+  archive.commit("Updated #{Date.today}") do
+    Ronin::Web::Spider.every_page(host: 'example.com') do |page|
+      archive.write(page.url,page.body)
+    end
+  end
+end
+```
+
 ## Requirements
 
 * [Ruby] >= 3.0.0
