@@ -29,6 +29,9 @@ module Ronin
       #
       # Spider a host and archive every web page:
       #
+      #     require 'ronin/web/spider'
+      #     require 'ronin/web/spider/archive'
+      #     
       #     Ronin::Web::Spider::Archive.open('path/to/root') do |archive|
       #       Ronin::Web::Spider.every_page(host: 'example.com') do |page|
       #         archive.write(page.url,page.body)
