@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/ronin-rb/ronin-web-spider/actions/workflows/ruby.yml/badge.svg)](https://github.com/ronin-rb/ronin-web-spider/actions/workflows/ruby.yml)
 [![Code Climate](https://codeclimate.com/github/ronin-rb/ronin-web-spider.svg)](https://codeclimate.com/github/ronin-rb/ronin-web-spider)
+[![Gem Version](https://badge.fury.io/rb/ronin-web-spider.svg)](https://badge.fury.io/rb/ronin-web-spider)
 
 * [Website](https://ronin-rb.dev/)
 * [Source](https://github.com/ronin-rb/ronin-web-spider)
