@@ -222,7 +222,7 @@ module Ronin
         # Passes every non-empty HTML comment to the given block.
         #
         # @yield [comment]
-        #   The given block will be passevery HTML comment.
+        #   The given block will be pass every HTML comment.
         #
         # @yieldparam [String] comment
         #   The HTML comment inner text, with leading and trailing whitespace
