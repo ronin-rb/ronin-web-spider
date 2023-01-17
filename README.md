@@ -237,7 +237,7 @@ Detect when a new host name is spidered:
 ```ruby
 Ronin::Web::Spider.domain('example.com') do |spider|
   spider.every_host do |host|
-    puts "Spidring #{host} ..."
+    puts "Spidering #{host} ..."
   end
 end
 ```
