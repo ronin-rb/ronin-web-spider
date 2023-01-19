@@ -21,21 +21,34 @@ ronin-web-spider is a collection of common web spidering routines using the
 
 * Built on top of the battle tested and versatile [spidr] gem.
 * Provides additional callback methods:
-  * `every_host` - yields every unique host name that's spidered.
-  * `every_cert` - yields every unique SSL/TLS certificate encountered while
-    spidering.
-  * `every_favicon` - yields every favicon file that's encountered while
-    spidering.
-  * `every_html_comment` - yields every HTML comment.
-  * `every_javascript` - yields all JavaScript source code from either inline
-    `<script>` or `.js` files.
-  * `every_javascript_string` - yields every single-quoted or double-quoted
-    String literal from all JavaScript source code.
-  * `every_javascript_comment` - yields every JavaScript comment.
-  * `every_comment` - yields every HTML or JavaScript comment.
+  * [every_host][docs-every_host] - yields every unique host name that's
+    spidered.
+  * [every_cert][docs-every_cert] - yields every unique SSL/TLS certificate
+    encountered while spidering.
+  * [every_favicon][docs-every_favicon] - yields every favicon file that's
+    encountered while spidering.
+  * [every_html_comment][docs-every_html_comment] - yields every HTML comment.
+  * [every_javascript][docs-every_javascript] - yields all JavaScript source
+    code from either inline `<script>` or `.js` files.
+  * [every_javascript_string][docs-every_javascript_string] - yields every
+    single-quoted or double-quoted String literal from all JavaScript source
+    code.
+  * [every_javascript_comment][docs-every_javascript_comment] - yields every
+    JavaScript comment.
+  * [every_comment][docs-every_comment] - yields every HTML or JavaScript
+    comment.
 * Supports archiving spidered pages to a directory or git repository.
 * Has 94% documentation coverage.
 * Has 94% test coverage.
+
+[docs-every_host]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_host-instance_method
+[docs-every_cert]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_cert-instance_method
+[docs-every_favicon]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_favicon-instance_method
+[docs-every_html_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_html_comment-instance_method
+[docs-every_javascript]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript-instance_method
+[docs-every_javascript_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_string-instance_method
+[docs-every_javascript_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_comment-instance_method
+[docs-every_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_comment-instance_method
 
 ## Examples
 
