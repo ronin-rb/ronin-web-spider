@@ -13,7 +13,7 @@ describe Ronin::Web::Spider::Agent do
 
       before { Ronin::Support::Network::HTTP.proxy = proxy_uri }
 
-      it "must parse ENV['RONIN_HTTP_USER_AGENT'] and set #proxy" do
+      it "must use Ronin::Support::Network::HTTP.proxy and set #proxy" do
         expect(subject.proxy).to be_kind_of(Spidr::Proxy)
         expect(subject.proxy.host).to eq(proxy_host)
         expect(subject.proxy.port).to eq(proxy_port)
@@ -27,7 +27,7 @@ describe Ronin::Web::Spider::Agent do
 
       before { Ronin::Support::Network::HTTP.user_agent = user_agent }
 
-      it "must default #user_agent to ENV['RONIN_HTTP_USER_AGENT']" do
+      it "must use Ronin::Support::Network::HTTP.user_agent and set #user_agent" do
         expect(subject.user_agent).to eq(user_agent)
       end
 
