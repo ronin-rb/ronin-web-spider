@@ -38,7 +38,7 @@ ronin-web-spider is a collection of common web spidering routines using the
   * [every_comment][docs-every_comment] - yields every HTML or JavaScript
     comment.
 * Supports archiving spidered pages to a directory or git repository.
-* Has 94% documentation coverage.
+* Has 97% documentation coverage.
 * Has 94% test coverage.
 
 [docs-every_host]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_host-instance_method
