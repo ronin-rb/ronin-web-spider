@@ -225,9 +225,16 @@ module Ronin
         # @yield [comment]
         #   The given block will be pass every HTML comment.
         #
+        # @yield [comment, page]
+        #   If the block accepts two arguments, the HTML comment and the page
+        #   that the comment was found on will be passed to the given block.
+        #
         # @yieldparam [String] comment
         #   The HTML comment inner text, with leading and trailing whitespace
         #   stripped.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the HTML comment exists on.
         #
         # @example
         #   spider.every_html_comment do |comment|
@@ -236,13 +243,17 @@ module Ronin
         #
         # @api public
         #
-        def every_html_comment
+        def every_html_comment(&block)
           every_html_page do |page|
             page.doc.xpath('//comment()').each do |comment|
               comment_text = comment.inner_text.strip
 
               unless comment_text.empty?
-                yield comment_text
+                if block.arity == 2
+                  yield comment_text, page
+                else
+                  yield comment_text
+                end
               end
             end
           end
@@ -254,8 +265,16 @@ module Ronin
         # @yield [js]
         #   The given block will be passed every piece of JavaScript source.
         #
+        # @yield [js, page]
+        #   If the block accepts two arguments, the JavaScript source and the
+        #   page that the JavaScript source was found on will be passed to the
+        #   given block.
+        #
         # @yieldparam [String] js
         #   The JavaScript source code.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript source was found in or on.
         #
         # @example
         #   spider.every_javascript do |js|
@@ -264,19 +283,27 @@ module Ronin
         #
         # @api public
         #
-        def every_javascript
+        def every_javascript(&block)
           # yield inner text of every `<script type="text/javascript">` tag
           # and every `.js` URL.
           every_html_page do |page|
             page.doc.xpath('//script[@type="text/javascript"]').each do |script|
               unless script.inner_text.empty?
-                yield script.inner_text
+                if block.arity == 2
+                  yield script.inner_text, page
+                else
+                  yield script.inner_text
+                end
               end
             end
           end
 
           every_javascript_page do |page|
-            yield page.body
+            if block.arity == 2
+              yield page.body, page
+            else
+              yield page.body
+            end
           end
         end
 
@@ -289,8 +316,16 @@ module Ronin
         #   The given block will be passed each JavaScript string with the quote
         #   marks removed.
         #
+        # @yield [string, page]
+        #   If the block accepts two arguments, the JavaScript string and the
+        #   page that the JavaScript string was found on will be passed to the
+        #   given block.
+        #
         # @yieldparam [String] string
         #   The parsed contents of a JavaScript string.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript string was found in or on.
         #
         # @example
         #   spider.every_javascript_string do |str|
@@ -299,10 +334,16 @@ module Ronin
         #
         # @api public
         #
-        def every_javascript_string
-          every_javascript do |js|
+        def every_javascript_string(&block)
+          every_javascript do |js,page|
             js.scan(Support::Text::Patterns::STRING) do |js_string|
-              yield Support::Encoding::JS.unquote(js_string)
+              string = Support::Encoding::JS.unquote(js_string)
+
+              if block.arity == 2
+                yield string, page
+              else
+                yield string
+              end
             end
           end
         end
@@ -316,8 +357,16 @@ module Ronin
         #   The given block will be passed each JavaScript URL string with the
         #   quote marks removed.
         #
+        # @yield [string, page]
+        #   If the block accepts two arguments, the JavaScript URL string and
+        #   the page that the JavaScript URL string was found on will be passed
+        #   to the given block.
+        #
         # @yieldparam [String] string
         #   The parsed contents of a literal JavaScript URL string.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript URL string was found in or on.
         #
         # @example
         #   spider.every_javascript_url_string do |url|
@@ -328,10 +377,14 @@ module Ronin
         #
         # @since 0.2.0
         #
-        def every_javascript_url_string
-          every_javascript_string do |string|
+        def every_javascript_url_string(&block)
+          every_javascript_string do |string,page|
             if string =~ Support::Text::Patterns::URL
-              yield string
+              if block.arity == 2
+                yield string, page
+              else
+                yield string
+              end
             end
           end
         end
@@ -344,8 +397,16 @@ module Ronin
         # @yield [comment]
         #   The given block will be passed each JavaScript comment.
         #
+        # @yield [comment, page]
+        #   If the block accepts two arguments, the JavaScript comment and the
+        #   page that the JavaScript comment was found on will be passed to the
+        #   given block.
+        #
         # @yieldparam [String] comment
         #   The contents of a JavaScript comment.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript comment was found in or on.
         #
         # @example
         #   spider.every_javascript_comment do |comment|
@@ -355,8 +416,14 @@ module Ronin
         # @api public
         #
         def every_javascript_comment(&block)
-          every_javascript do |js|
-            js.scan(Support::Text::Patterns::JAVASCRIPT_COMMENT,&block)
+          every_javascript do |js,page|
+            js.scan(Support::Text::Patterns::JAVASCRIPT_COMMENT) do |comment|
+              if block.arity == 2
+                yield comment, page
+              else
+                yield comment
+              end
+            end
           end
         end
 
@@ -368,8 +435,16 @@ module Ronin
         # @yield [comment]
         #   The given block will be passed each HTML or JavaScript comment.
         #
+        # @yield [comment, page]
+        #   If the block accepts two arguments, the HTML or JavaScript comment
+        #   and the page that the HTML/JavaScript comment was found on will be
+        #   passed to the given block.
+        #
         # @yieldparam [String] comment
         #   The contents of a HTML or JavaScript comment.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the HTML or JavaScript comment was found in or on.
         #
         # @example
         #   spider.every_comment do |comment|
