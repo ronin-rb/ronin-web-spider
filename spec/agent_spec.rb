@@ -774,6 +774,87 @@ describe Ronin::Web::Spider::Agent do
     end
   end
 
+  describe "#every_javascript_relative_path_string" do
+    module TestAgentEveryJavaScriptRelativePathString
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+            <html>
+              <head>
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">
+                var str3 = "string #3";
+                var str4 = '../up/directory';
+                var str5 = 'file.txt';
+                </script>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          <<~JS
+            var str1 = "/absolute/path";
+            var str2 = "sub/directory";
+          JS
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryJavaScriptRelativePathString::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every JavaScript relative path string from any <script> tag" do
+      yielded_javascript_relative_paths = []
+
+      subject.every_javascript_relative_path_string do |path|
+        yielded_javascript_relative_paths << path
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_javascript_relative_paths).to match_array(
+        [
+          "sub/directory",
+          "../up/directory",
+          'file.txt'
+        ]
+      )
+    end
+
+    context "when the block accepts two arguments" do
+      it "must yield every JavaScript relative path string and the Spidr::Page object" do
+        yielded_javascript_relative_paths = []
+        yielded_pages                     = []
+
+        subject.every_javascript_relative_path_string do |path,page|
+          yielded_javascript_relative_paths << path
+          yielded_pages                     << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascript_relative_paths).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
+    end
+  end
+
   describe "#every_javascript_url_string" do
     module TestAgentEveryJavaScriptURLString
       class TestApp < Sinatra::Base
