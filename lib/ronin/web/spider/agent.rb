@@ -293,8 +293,8 @@ module Ronin
         #
         # @example
         #   spider.every_javascript_string do |str|
-        #    puts str
-        #  end
+        #     puts str
+        #   end
         #
         # @api public
         #
