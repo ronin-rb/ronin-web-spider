@@ -322,6 +322,23 @@ describe Ronin::Web::Spider::Agent do
       )
     end
 
+    context "when the block accepts two arguments" do
+      it "must yield every HTML comment and the Spidr::Page object" do
+        yielded_comments = []
+        yielded_pages    = []
+
+        subject.every_html_comment do |comment,page|
+          yielded_comments << comment
+          yielded_pages    << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_comments).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
+    end
+
     context "when the page has a text/html Content-Type, but no response body" do
       module TestAgentEveryHTMLComment
         class TestAppWithEmptyResponses < Sinatra::Base
@@ -426,6 +443,23 @@ describe Ronin::Web::Spider::Agent do
       subject.start_at("http://#{host}/")
 
       expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
+    end
+
+    context "when the block accepts two arguments" do
+      it "must yield every JavaScript and the Spidr::Page object" do
+        yielded_javascripts = []
+        yielded_pages       = []
+
+        subject.every_javascript do |javascript,page|
+          yielded_javascripts << javascript
+          yielded_pages       << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascripts).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
     end
 
     context "when the page has a text/html Content-Type, but no response body" do
@@ -593,6 +627,21 @@ describe Ronin::Web::Spider::Agent do
           'string #4'
         ]
       )
+    end
+
+    context "when the block accepts two arguments" do
+      it "must yield every JavaScript string and the Spidr::Page object" do
+        yielded_javascript_strings = []
+        yielded_pages              = []
+
+        subject.every_javascript_string do |string,page|
+          yielded_javascript_strings << string
+          yielded_pages              << page
+        end
+
+        expect(yielded_javascript_strings).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
     end
 
     context "when the JavaScript contains inline regexes" do
@@ -786,6 +835,23 @@ describe Ronin::Web::Spider::Agent do
         ]
       )
     end
+
+    context "when the block accepts two arguments" do
+      it "must yield every JavaScript URL string and the Spidr::Page object" do
+        yielded_javascript_urls = []
+        yielded_pages           = []
+
+        subject.every_javascript_url_string do |url,page|
+          yielded_javascript_urls << url
+          yielded_pages           << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascript_urls).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
+    end
   end
 
   describe "#every_javascript_comment" do
@@ -855,6 +921,23 @@ describe Ronin::Web::Spider::Agent do
           "/*\n       comment 4\n     */"
         ]
       )
+    end
+
+    context "when the block accepts two arguments" do
+      it "must yield every JavaScript comment and the Spidr::Page object" do
+        yielded_javascript_comments = []
+        yielded_pages               = []
+
+        subject.every_javascript_comment do |comment,page|
+          yielded_javascript_comments << comment
+          yielded_pages               << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascript_comments).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
     end
   end
 
@@ -930,6 +1013,23 @@ describe Ronin::Web::Spider::Agent do
           "HTML comment 2"
         ]
       )
+    end
+
+    context "when the block accepts two arguments" do
+      it "must yield every HTML or JavaScript and the Spidr::Page object" do
+        yielded_comments = []
+        yielded_pages    = []
+
+        subject.every_comment do |comment,page|
+          yielded_comments << comment
+          yielded_pages    << page
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_comments).to all(be_kind_of(String))
+        expect(yielded_pages).to all(be_kind_of(Spidr::Page))
+      end
     end
   end
 end
