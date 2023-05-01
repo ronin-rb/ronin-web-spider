@@ -466,6 +466,55 @@ module Ronin
 
         alias every_js_relative_path_string every_javascript_relative_path_string
 
+        # Regular expression that matches absolute paths within JavaScript.
+        #
+        # @api private
+        #
+        # @since 0.2.0
+        JAVASCRIPT_ABSOLUTE_PATH = %r{\A(?:/[^/\\]+)+\z}
+
+        #
+        # Passes every JavaScript absolute path string to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript absolute path string
+        #   with the quote marks removed.
+        #
+        # @yield [string, page]
+        #   If the block accepts two arguments, the JavaScript absolute path
+        #   string and the page that the JavaScript absolute path string was
+        #   found on will be passed to the given block.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a literal JavaScript absolute path string.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript absolute path string was found in or
+        #   on.
+        #
+        # @example
+        #   spider.every_javascript_absolute_path_string do |absolute_path|
+        #     puts absolute_path
+        #   end
+        #
+        # @api public
+        #
+        # @since 0.2.0
+        #
+        def every_javascript_absolute_path_string(&block)
+          every_javascript_string do |string,page|
+            if string =~ JAVASCRIPT_ABSOLUTE_PATH
+              if block.arity == 2
+                yield string, page
+              else
+                yield string
+              end
+            end
+          end
+        end
+
+        alias every_js_absolute_path_string every_javascript_absolute_path_string
+
         #
         # Passes every JavaScript URL string to the given block.
         #
