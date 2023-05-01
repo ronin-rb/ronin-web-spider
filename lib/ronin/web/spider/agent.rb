@@ -516,6 +516,40 @@ module Ronin
         alias every_js_absolute_path_string every_javascript_absolute_path_string
 
         #
+        # Passes every JavaScript path string to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript path string with the
+        #   quote marks removed.
+        #
+        # @yield [string, page]
+        #   If the block accepts two arguments, the JavaScript path string and
+        #   the page that the JavaScript path string was found on will be
+        #   passed to the given block.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a literal JavaScript path string.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript path string was found in or on.
+        #
+        # @example
+        #   spider.every_javascript_path_string do |path|
+        #     puts path
+        #   end
+        #
+        # @api public
+        #
+        # @since 0.2.0
+        #
+        def every_javascript_path_string(&block)
+          every_javascript_relative_path_string(&block)
+          every_javascript_absolute_path_string(&block)
+        end
+
+        alias every_js_path_string every_javascript_path_string
+
+        #
         # Passes every JavaScript URL string to the given block.
         #
         # @yield [string]
