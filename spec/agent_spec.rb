@@ -725,6 +725,69 @@ describe Ronin::Web::Spider::Agent do
     end
   end
 
+  describe "#every_javascript_url_string" do
+    module TestAgentEveryJavaScriptURLString
+      class TestApp < Sinatra::Base
+
+        set :host, 'example.com'
+        set :port, 80
+
+        get '/' do
+          <<~HTML
+            <html>
+              <head>
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">
+                var str3 = "string #3";
+                var str4 = 'https://example.com/js_url2';
+                var str5 = 'string #5';
+                </script>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
+          HTML
+        end
+
+        get '/javascript1.js' do
+          content_type 'text/javascript'
+          <<~JS
+            var str1 = "string #1";
+            var str2 = "http://example.com/js_url1";
+          JS
+        end
+      end
+    end
+
+    let(:host) { 'example.com' }
+
+    let(:test_app) { TestAgentEveryJavaScriptURLString::TestApp }
+
+    before do
+      stub_request(:any, /#{Regexp.escape(host)}/).to_rack(test_app)
+    end
+
+    it "must yield every JavaScript URL string from any <script> tag" do
+      yielded_javascript_urls = []
+
+      subject.every_javascript_url_string do |url|
+        yielded_javascript_urls << url
+      end
+
+      subject.start_at("http://#{host}/")
+
+      expect(yielded_javascript_urls).to match_array(
+        [
+          "http://example.com/js_url1",
+          "https://example.com/js_url2"
+        ]
+      )
+    end
+  end
+
   describe "#every_javascript_comment" do
     module TestAgentEveryJavaScriptComment
       class TestApp < Sinatra::Base

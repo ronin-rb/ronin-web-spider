@@ -304,6 +304,16 @@ Ronin::Web::Spider.domain('example.com') do |spider|
 end
 ```
 
+Print every JavaScript URL string literal:
+
+```ruby
+Ronin::Web::Spider.domain('example.com') do |spider|
+  spider.every_javascript_url_string do |url|
+    puts url
+  end
+end
+```
+
 Print every JavaScript comment:
 
 ```ruby

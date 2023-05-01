@@ -23,6 +23,7 @@ require 'spidr/agent'
 require 'ronin/support/network/http'
 require 'ronin/support/crypto/cert'
 require 'ronin/support/text/patterns/source_code'
+require 'ronin/support/text/patterns/network'
 require 'ronin/support/encoding/js'
 
 module Ronin
@@ -363,6 +364,35 @@ module Ronin
         end
 
         alias every_js_string every_javascript_string
+
+        #
+        # Passes every JavaScript URL string to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript URL string with the
+        #   quote marks removed.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a literal JavaScript URL string.
+        #
+        # @example
+        #   spider.every_javascript_url_string do |url|
+        #     puts url
+        #   end
+        #
+        # @api public
+        #
+        # @since 0.2.0
+        #
+        def every_javascript_url_string
+          every_javascript_string do |string|
+            if string =~ Support::Text::Patterns::URL
+              yield string
+            end
+          end
+        end
+
+        alias every_js_url_string every_javascript_url_string
 
         #
         # Passes every JavaScript comment to the given block.
