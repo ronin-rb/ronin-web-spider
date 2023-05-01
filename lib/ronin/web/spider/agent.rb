@@ -413,9 +413,9 @@ module Ronin
         JAVASCRIPT_RELATIVE_PATH = %r{
           \A
             (?:
-               [^/\\.]+\.[a-z0-9]+ (?# filename.ext)
+               [^/\\. ]+\.[a-z0-9]+ (?# filename.ext)
                |
-               [^/\\]+(?:/[^/\\]+)+ (?# dir/filename or dir/filename.ext)
+               [^/\\ ]+(?:/[^/\\ ]+)+ (?# dir/filename or dir/filename.ext)
             )
           \z
         }x
@@ -463,7 +463,7 @@ module Ronin
         alias every_js_relative_path_string every_javascript_relative_path_string
 
         # Regular expression that matches absolute paths within JavaScript.
-        JAVASCRIPT_ABSOLUTE_PATH = %r{\A(?:/[^/\\]+)+\z}
+        JAVASCRIPT_ABSOLUTE_PATH = %r{\A(?:/[^/\\ ]+)+\z}
 
         #
         # Passes every JavaScript absolute path string to the given block.
