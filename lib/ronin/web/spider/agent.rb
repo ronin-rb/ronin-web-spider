@@ -405,6 +405,63 @@ module Ronin
 
         alias every_js_string every_javascript_string
 
+        # Regular expression that matches relative paths within JavaScript.
+        #
+        # @note
+        #   This matches `foo/bar`, `foo/bar.ext`, `../foo`, and `foo.ext`,
+        #   but *not* `/foo`, `foo`, or `foo.`.
+        JAVASCRIPT_RELATIVE_PATH = %r{
+          \A
+            (?:
+               [^/\\.]+\.[a-z0-9]+ (?# filename.ext)
+               |
+               [^/\\]+(?:/[^/\\]+)+ (?# dir/filename or dir/filename.ext)
+            )
+          \z
+        }x
+
+        #
+        # Passes every JavaScript relative path string to the given block.
+        #
+        # @yield [string]
+        #   The given block will be passed each JavaScript relative path string
+        #   with the quote marks removed.
+        #
+        # @yield [string, page]
+        #   If the block accepts two arguments, the JavaScript relative path
+        #   string and the page that the JavaScript relative path string was
+        #   found on will be passed to the given block.
+        #
+        # @yieldparam [String] string
+        #   The parsed contents of a literal JavaScript relative path string.
+        #
+        # @yieldparam [Spidr::Page] page
+        #   The page that the JavaScript relative path string was found in or
+        #   on.
+        #
+        # @example
+        #   spider.every_javascript_relative_path_string do |relative_path|
+        #     puts relative_path
+        #   end
+        #
+        # @api public
+        #
+        # @since 0.2.0
+        #
+        def every_javascript_relative_path_string(&block)
+          every_javascript_string do |string,page|
+            if string =~ JAVASCRIPT_RELATIVE_PATH
+              if block.arity == 2
+                yield string, page
+              else
+                yield string
+              end
+            end
+          end
+        end
+
+        alias every_js_relative_path_string every_javascript_relative_path_string
+
         #
         # Passes every JavaScript URL string to the given block.
         #
