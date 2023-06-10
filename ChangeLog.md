@@ -20,3 +20,4 @@
     * `every_comment` - yields every HTML or JavaScript comment.
   * Supports archiving spidered pages to a directory or git repository.
 
+[spidr]: https://github.com/postmodern/spidr#readme
