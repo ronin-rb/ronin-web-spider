@@ -237,6 +237,8 @@ module Ronin
         #
         def every_html_comment
           every_html_page do |page|
+            next unless page.doc
+
             page.doc.xpath('//comment()').each do |comment|
               comment_text = comment.inner_text.strip
 
@@ -267,6 +269,8 @@ module Ronin
           # yield inner text of every `<script type="text/javascript">` tag
           # and every `.js` URL.
           every_html_page do |page|
+            next unless page.doc
+
             page.doc.xpath('//script[@type="text/javascript"]').each do |script|
               unless script.inner_text.empty?
                 yield script.inner_text

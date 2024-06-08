@@ -321,6 +321,61 @@ describe Ronin::Web::Spider::Agent do
         ]
       )
     end
+
+    context "when the page has a text/html Content-Type, but no response body" do
+      module TestAgentEveryHTMLComment
+        class TestAppWithEmptyResponses < Sinatra::Base
+
+          set :host, 'example.com'
+          set :port, 80
+
+          get '/' do
+            <<~HTML
+              <html>
+                <body>
+                  <!-- comment 1 -->
+                  <a href="/link1">link1</a>
+                  <a href="/link2">link2</a>
+                </body>
+              </html>
+            HTML
+          end
+
+          get '/link1' do
+            halt 200
+          end
+
+          get '/link2' do
+            <<~HTML
+              <html>
+                <body>
+                  <!-- comment 2 -->
+                </body>
+              </html>
+            HTML
+          end
+        end
+      end
+
+      let(:test_app) { TestAgentEveryHTMLComment::TestAppWithEmptyResponses }
+
+      it "must ignore the page" do
+        yielded_comments = []
+
+        subject.every_html_comment do |comment|
+          yielded_comments << comment
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_comments).to match_array(
+          [
+            'comment 1',
+            'comment 2'
+          ]
+        )
+      end
+    end
   end
 
   describe "#every_javascript" do
@@ -371,6 +426,63 @@ describe Ronin::Web::Spider::Agent do
       subject.start_at("http://#{host}/")
 
       expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
+    end
+
+    context "when the page has a text/html Content-Type, but no response body" do
+      module TestAgentEveryJavaScript
+        class TestAppWithEmptyResponses < Sinatra::Base
+
+          set :host, 'example.com'
+          set :port, 80
+
+          get '/' do
+            <<~HTML
+              <html>
+                <head>
+                  <script type="text/javascript" src="/javascript1.js"></script>
+                </head>
+                <body>
+                  <a href="/link1">link1</a>
+                  <a href="/link2">link2</a>
+                </body>
+              </html>
+            HTML
+          end
+
+          get '/javascript1.js' do
+            content_type 'text/javascript'
+            "javascript1"
+          end
+
+          get '/link1' do
+            halt 200
+          end
+
+          get '/link2' do
+            <<~HTML
+              <html>
+                <body>
+                  <script type="text/javascript">javascript2</script>
+                </body>
+              </html>
+            HTML
+          end
+        end
+      end
+
+      let(:test_app) { TestAgentEveryJavaScript::TestAppWithEmptyResponses }
+
+      it "must ignore the page" do
+        yielded_javascripts = []
+
+        subject.every_javascript do |js|
+          yielded_javascripts << js
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
+      end
     end
   end
 
