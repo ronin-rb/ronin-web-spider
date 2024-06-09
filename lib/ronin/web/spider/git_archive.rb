@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # ronin-web-spider - A collection of common web spidering routines.
 #
@@ -33,7 +34,7 @@ module Ronin
       #     require 'ronin/web/spider'
       #     require 'ronin/web/spider/git_archive'
       #     require 'date'
-      #     
+      #
       #     Ronin::Web::Spider::GitArchive.open('path/to/root') do |archive|
       #       archive.commit("Updated #{Date.today}") do
       #         Ronin::Web::Spider.every_page(host: 'example.com') do |page|

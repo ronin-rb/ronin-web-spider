@@ -128,13 +128,13 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
@@ -160,7 +160,7 @@ describe Ronin::Web::Spider::Agent do
     end
 
     let(:host1) { 'host1.example.com' }
-    let(:host2) { 'host2.example.com'   }
+    let(:host2) { 'host2.example.com' }
 
     let(:host1_app) { TestAgentEveryHost::Host1 }
     let(:host2_app) { TestAgentEveryHost::Host2 }
@@ -183,7 +183,7 @@ describe Ronin::Web::Spider::Agent do
     end
 
     it "must popualte #visited_hosts" do
-      subject.every_host { |host| }
+      subject.every_host { |host| nil }
       subject.start_at("http://#{host1}/")
 
       expect(subject.visited_hosts).to be_kind_of(Set)
@@ -193,7 +193,7 @@ describe Ronin::Web::Spider::Agent do
 
   # TODO: need to figure out how to test #every_cert using webmock.
   describe "#every_cert"
-  
+
   describe "#every_favicon" do
     module TestAgentEveryHost
       class TestApp < Sinatra::Base
@@ -203,16 +203,16 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <link rel="favicon" href="/favicon1.ico" type="image/x-icon"/>
-            </head>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <head>
+                <link rel="favicon" href="/favicon1.ico" type="image/x-icon"/>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
@@ -234,12 +234,12 @@ describe Ronin::Web::Spider::Agent do
 
         get '/link2' do
           <<~HTML
-          <html>
-            <head>
-              <link rel="favicon" href="/favicon2.ico" type="image/x-icon"/>
-            </head>
-            <body>got here</body>
-          </html>
+            <html>
+              <head>
+                <link rel="favicon" href="/favicon2.ico" type="image/x-icon"/>
+              </head>
+              <body>got here</body>
+            </html>
           HTML
         end
       end
@@ -283,15 +283,15 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <!-- comment 1 -->
-            </head>
-            <!-- -->
-            <body>
-              <!-- comment 2 -->
-            </body>
-          </html>
+            <html>
+              <head>
+                <!-- comment 1 -->
+              </head>
+              <!-- -->
+              <body>
+                <!-- comment 2 -->
+              </body>
+            </html>
           HTML
         end
       end
@@ -387,17 +387,17 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <script type="text/javascript" src="/javascript1.js"></script>
-              <script type="text/javascript">javascript2</script>
-            </head>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <head>
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">javascript2</script>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
@@ -541,28 +541,28 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <script type="text/javascript" src="/javascript1.js"></script>
-              <script type="text/javascript">
-              var str3 = "string #3";
-              var str4 = 'string #4';
-              </script>
-            </head>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <head>
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">
+                var str3 = "string #3";
+                var str4 = 'string #4';
+                </script>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
         get '/javascript1.js' do
           content_type 'text/javascript'
           <<~JS
-          var str1 = "string #1";
-          var str2 = 'string #2';
+            var str1 = "string #1";
+            var str2 = 'string #2';
           JS
         end
       end
@@ -605,34 +605,34 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <script type="text/javascript" src="/javascript1.js"></script>
-              <script type="text/javascript">
-              // comment 3
-              var str3 = "string #3";
-              /*
-                 comment 4
-               */
-              var str4 = 'string #4';
-              </script>
-            </head>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <head>
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">
+                // comment 3
+                var str3 = "string #3";
+                /*
+                   comment 4
+                 */
+                var str4 = 'string #4';
+                </script>
+              </head>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
         get '/javascript1.js' do
           content_type 'text/javascript'
           <<~JS
-          // comment 1
-          var str1 = "string #1";
-          /* comment 2 */
-          var str2 = 'string #2';
+            // comment 1
+            var str1 = "string #1";
+            /* comment 2 */
+            var str2 = 'string #2';
           JS
         end
       end
@@ -675,37 +675,37 @@ describe Ronin::Web::Spider::Agent do
 
         get '/' do
           <<~HTML
-          <html>
-            <head>
-              <!-- HTML comment 1 -->
-              <script type="text/javascript" src="/javascript1.js"></script>
-              <script type="text/javascript">
-              // JavaScript comment 3
-              var str3 = "string #3";
-              /*
-                 JavaScript comment 4
-               */
-              var str4 = 'string #4';
-              </script>
-            </head>
-            <!-- -->
-            <body>
-              <!-- HTML comment 2 -->
-              <a href="/link1">link1</a>
-              <a href="http://host2.example.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <head>
+                <!-- HTML comment 1 -->
+                <script type="text/javascript" src="/javascript1.js"></script>
+                <script type="text/javascript">
+                // JavaScript comment 3
+                var str3 = "string #3";
+                /*
+                   JavaScript comment 4
+                 */
+                var str4 = 'string #4';
+                </script>
+              </head>
+              <!-- -->
+              <body>
+                <!-- HTML comment 2 -->
+                <a href="/link1">link1</a>
+                <a href="http://host2.example.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
         get '/javascript1.js' do
           content_type 'text/javascript'
           <<~JS
-          // JavaScript comment 1
-          var str1 = "string #1";
-          /* JavaScript comment 2 */
-          var str2 = 'string #2';
+            // JavaScript comment 1
+            var str1 = "string #1";
+            /* JavaScript comment 2 */
+            var str2 = 'string #2';
           JS
         end
       end

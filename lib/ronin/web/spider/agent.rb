@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # ronin-web-spider - A collection of common web spidering routines.
 #

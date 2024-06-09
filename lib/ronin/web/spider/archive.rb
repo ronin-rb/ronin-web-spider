@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # ronin-web-spider - A collection of common web spidering routines.
 #
@@ -31,7 +32,7 @@ module Ronin
       #
       #     require 'ronin/web/spider'
       #     require 'ronin/web/spider/archive'
-      #     
+      #
       #     Ronin::Web::Spider::Archive.open('path/to/root') do |archive|
       #       Ronin::Web::Spider.every_page(host: 'example.com') do |page|
       #         archive.write(page.url,page.body)

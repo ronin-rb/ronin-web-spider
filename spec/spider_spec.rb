@@ -19,13 +19,13 @@ describe Ronin::Web::Spider do
 
         get '/entry-point' do
           <<~HTML
-          <html>
-            <body>
-              <a href="/link1">link1</a>
-              <a href="http://other.com/offsite-link">offsite link</a>
-              <a href="/link2">link2</a>
-            </body>
-          </html>
+            <html>
+              <body>
+                <a href="/link1">link1</a>
+                <a href="http://other.com/offsite-link">offsite link</a>
+                <a href="/link2">link2</a>
+              </body>
+            </html>
           HTML
         end
 
