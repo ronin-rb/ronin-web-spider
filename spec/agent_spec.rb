@@ -484,6 +484,52 @@ describe Ronin::Web::Spider::Agent do
         expect(yielded_javascripts).to match_array(%w[javascript1 javascript2])
       end
     end
+
+    context "when the responses do not include 'charset=utf-8'" do
+      module TestAgentEveryJavaScript
+        class TestAppWithoutCharset < Sinatra::Base
+
+          set :host, 'example.com'
+          set :port, 80
+
+          get '/' do
+            content_type 'text/html', charset: 'US-ASCII'
+            <<~HTML
+              <html>
+                <head>
+                  <script type="text/javascript" src="/javascript1.js"></script>
+                  <script type="text/javascript">javascript2</script>
+                </head>
+                <body>
+                  <a href="/link1">link1</a>
+                  <a href="http://host2.example.com/offsite-link">offsite link</a>
+                  <a href="/link2">link2</a>
+                </body>
+              </html>
+            HTML
+          end
+
+          get '/javascript1.js' do
+            content_type 'text/javascript', charset: 'US-ASCII'
+            "javascript1"
+          end
+        end
+      end
+
+      let(:test_app) { TestAgentEveryJavaScript::TestAppWithoutCharset }
+
+      it "must default the encoding of the JavaScript Strings to UTF-8" do
+        yielded_javascripts = []
+
+        subject.every_javascript do |js|
+          yielded_javascripts << js
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascripts.map(&:encoding)).to all(be(Encoding::UTF_8))
+      end
+    end
   end
 
   describe "#every_javascript_string" do

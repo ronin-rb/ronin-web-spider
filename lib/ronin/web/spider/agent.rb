@@ -272,14 +272,20 @@ module Ronin
             next unless page.doc
 
             page.doc.xpath('//script[@type="text/javascript"]').each do |script|
-              unless script.inner_text.empty?
-                yield script.inner_text
+              source = script.inner_text
+              source.force_encoding(Encoding::UTF_8)
+
+              unless source.empty?
+                yield source
               end
             end
           end
 
           every_javascript_page do |page|
-            yield page.body
+            source = page.body
+            source.force_encoding(Encoding::UTF_8)
+
+            yield source
           end
         end
 
