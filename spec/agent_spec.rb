@@ -594,6 +594,135 @@ describe Ronin::Web::Spider::Agent do
         ]
       )
     end
+
+    context "when the JavaScript contains inline regexes" do
+      module TestAgentEveryJavaScriptString
+        class TestAppWithInlineRegexes < Sinatra::Base
+
+          set :host, 'example.com'
+          set :port, 80
+
+          get '/' do
+            <<~HTML
+              <html>
+                <head>
+                  <script type="text/javascript" src="/javascript1.js"></script>
+                  <script type="text/javascript">
+                  var foo  = /abc[`~!@#$%^&\\*\\(\\)_\\+\\-=\\[\\]\\{\\}\\\\\\|;:'",.\\/?<>]xyz/;
+                  var str3 = "string #3";
+                  var bar  = [/multi
+                  line/];
+                  var str4 = 'string #4';
+                  var baz  = {foo: /[\\{\\}]/};
+                  </script>
+                </head>
+                <body>
+                  <a href="/link1">link1</a>
+                  <a href="http://host2.example.com/offsite-link">offsite link</a>
+                  <a href="/link2">link2</a>
+                </body>
+              </html>
+            HTML
+          end
+
+          get '/javascript1.js' do
+            content_type 'text/javascript'
+            <<~JS
+              var foo  = foo(/[\\u200d\\ud800-\\udfff\\u0300-\\u036f\\ufe20-\\ufe2f\\u20d0-\\u20ff\\ufe0e\\ufe0f]/g);
+              var str1 = "string #1";
+              var bar  = /foo/.test(foo);
+              var str2 = 'string #2';
+              var baz  = /\\s+\\/\\\\/;
+            JS
+          end
+        end
+      end
+
+      let(:test_app) { TestAgentEveryJavaScriptString::TestAppWithInlineRegexes }
+
+      it "must skip past the inline regexes" do
+        yielded_javascript_strings = []
+
+        subject.every_javascript_string do |string|
+          yielded_javascript_strings << string
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascript_strings).to match_array(
+          [
+            'string #1',
+            'string #2',
+            'string #3',
+            'string #4'
+          ]
+        )
+      end
+    end
+
+    context "when the JavaScript contains template literals" do
+      module TestAgentEveryJavaScriptString
+        class TestAppWithTemplateLiterals < Sinatra::Base
+
+          set :host, 'example.com'
+          set :port, 80
+
+          get '/' do
+            <<~HTML
+              <html>
+                <head>
+                  <script type="text/javascript" src="/javascript1.js"></script>
+                  <script type="text/javascript">
+                  var foo  = `foo`;
+                  var str3 = "string #3";
+                  var bar  = `bar = ${1+1}`;
+                  var str4 = 'string #4';
+                  var baz  = `baz ${baz}`;
+                  </script>
+                </head>
+                <body>
+                  <a href="/link1">link1</a>
+                  <a href="http://host2.example.com/offsite-link">offsite link</a>
+                  <a href="/link2">link2</a>
+                </body>
+              </html>
+            HTML
+          end
+
+          get '/javascript1.js' do
+            content_type 'text/javascript'
+            <<~JS
+              var foo  = `foo = "${foo}"`;
+              var str1 = "string #1";
+              var bar  = `bar = '${bar}'`;
+              var str2 = 'string #2';
+              var baz  = `baz = /${baz}/`;
+            JS
+          end
+        end
+      end
+
+      let(:test_app) { TestAgentEveryJavaScriptString::TestAppWithInlineRegexes }
+
+      it "must skip past the template literals" do
+        yielded_javascript_strings = []
+
+        subject.every_javascript_string do |string|
+          yielded_javascript_strings << string
+        end
+
+        subject.start_at("http://#{host}/")
+
+        expect(yielded_javascript_strings).to match_array(
+          [
+            'string #1',
+            'string #2',
+            'string #3',
+            'string #4'
+          ]
+        )
+      end
+    end
   end
 
   describe "#every_javascript_comment" do

@@ -292,6 +292,38 @@ module Ronin
 
         alias every_js every_javascript
 
+        # Regex to match and skip JavaScript inline regexes.
+        #
+        # @api private
+        #
+        # @since 0.1.1
+        JAVASCRIPT_INLINE_REGEX = %r{
+          (?# match before the regex to avoid matching division operators )
+          (?:[\{\[\(;:,]\s*|=\s*)
+          /
+            (?# inline regex contents )
+            (?:
+              \[ (?:\\. | [^\]]) \] (?# [...] ) |
+              \\.                   (?# backslash escaped characters ) |
+              [^/]                  (?# everything else )
+            )+
+          /[dgimsuvy]* (?# also match any regex flags )
+        }mx
+
+        # Regex to match and skip JavaScript template literals.
+        #
+        # @note
+        #   This regex will not properly match nested template literals:
+        #
+        #   ```javascript
+        #   `foo ${`bar ${1+1}`}`
+        #   ```
+        #
+        # @api private
+        #
+        # @since 0.1.1
+        JAVASCRIPT_TEMPLATE_LITERAL = /`(?:\\`|[^`])+`/m
+
         #
         # Passes every JavaScript string value to the given block.
         #
@@ -311,8 +343,21 @@ module Ronin
         #
         def every_javascript_string
           every_javascript do |js|
-            js.scan(Support::Text::Patterns::STRING) do |js_string|
-              yield Support::Encoding::JS.unquote(js_string)
+            scanner = StringScanner.new(js)
+
+            until scanner.eos?
+              # NOTE: this is a naive JavaScript string scanner and should
+              # eventually be replaced with a real JavaScript lexer or parser.
+              case scanner.peek(1)
+              when '"', "'" # beginning of a quoted string
+                js_string = scanner.scan(Support::Text::Patterns::STRING)
+
+                yield Support::Encoding::JS.unquote(js_string)
+              else
+                scanner.skip(JAVASCRIPT_INLINE_REGEX) ||
+                  scanner.skip(JAVASCRIPT_TEMPLATE_LITERAL) ||
+                  scanner.getch
+              end
             end
           end
         end
