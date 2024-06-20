@@ -1,3 +1,21 @@
+### 0.1.1 / 2024-06-19
+
+* Fixed {Ronin::Web::Spider::Agent#every_html_comment} and
+  {Ronin::Web::Spider::Agent#every_javascript} when the page's `Content-Type`
+  header included `text/html` but lacked a response body, causing `page.doc` to
+  be `nil`.
+* Fixed a bug in {Ronin::Web::Spider::Agent#every_javascript} where parsed
+  JavaScript source code strings containing UTF-8 characters where being
+  incorrectly encoded as ASCII-8bit strings, if the page's `Content-Type` header
+  did not include a `charset=` attribute.
+* Fixed a bug in {Ronin::Web::Spider::Agent#every_javascript_string} where
+  inline JavaScript regexes containing the `"` or `'` characters (ex: `/["'=]/`)
+  would incorrectly be treated as the beginning or ends of JavaScript string
+  literals. Note that while this greatly improves the accuracy of
+  {Ronin::Web::Spider::Agent#every_javascript_string}, it still does not
+  support parsing JavaScript template literals that may also contain string
+  literals (ex: ````Hello \"World\"```` or ````Hello ${myFunc("string literal")}````).
+
 ### 0.1.0 / 2023-02-01
 
 * Extracted and refactored from [ronin-web](https://github.com/ronin-rb/ronin-web/tree/v0.3.0.rc1).
