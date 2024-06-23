@@ -1,3 +1,18 @@
+### 0.2.0 / 2024-XX-XX
+
+* Added {Ronin::Web::Spider::Agent#every_javascript_url_string}.
+* Added {Ronin::Web::Spider::Agent#every_javascript_relative_path_string}.
+* Added {Ronin::Web::Spider::Agent#every_javascript_absolute_path_string}.
+* Added {Ronin::Web::Spider::Agent#every_javascript_path_string}.
+* Allow {Ronin::Web::Spider::Agent#every_html_comment},
+  {Ronin::Web::Spider::Agent#every_javascript every_javascript},
+  {Ronin::Web::Spider::Agent#every_javascript_string every_javascript_string},
+  {Ronin::Web::Spider::Agent#every_javascript_relative_path_string every_javascript_relative_path_string},
+  {Ronin::Web::Spider::Agent#every_javascript_absolute_path_string every_javascript_absolute_path_string},
+  {Ronin::Web::Spider::Agent#every_javascript_url_string every_javascript_url_string}, and
+  {Ronin::Web::Spider::Agent#every_javascript_comment every_javascript_comment}
+  to also yield a `Spidr::Page` block argument for additional context.
+
 ### 0.1.1 / 2024-06-19
 
 * Fixed {Ronin::Web::Spider::Agent#every_html_comment} and
