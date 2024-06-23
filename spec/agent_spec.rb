@@ -1032,9 +1032,10 @@ describe Ronin::Web::Spider::Agent do
               <head>
                 <script type="text/javascript" src="/javascript1.js"></script>
                 <script type="text/javascript">
-                var str3 = "string #3";
-                var str4 = 'https://example.com/js_url2';
-                var str5 = 'string #5';
+                var str4 = "string #3";
+                var str5 = 'https://example.com/js_url2';
+                var str6 = 'string #5';
+                var str7 = "contains a URL: https://example.com/";
                 </script>
               </head>
               <body>
@@ -1051,6 +1052,7 @@ describe Ronin::Web::Spider::Agent do
           <<~JS
             var str1 = "string #1";
             var str2 = "http://example.com/js_url1";
+            var str3 = "contains a URL: https://example.com/";
           JS
         end
       end

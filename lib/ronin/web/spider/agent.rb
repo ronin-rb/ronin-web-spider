@@ -549,6 +549,13 @@ module Ronin
 
         alias every_js_path_string every_javascript_path_string
 
+        # Regular expression for identifying URLs.
+        #
+        # @api private
+        #
+        # @since 0.2.0
+        URL_REGEX = /\A#{Support::Text::Patterns::URL}\z/
+
         #
         # Passes every JavaScript URL string to the given block.
         #
@@ -578,7 +585,7 @@ module Ronin
         #
         def every_javascript_url_string(&block)
           every_javascript_string do |string,page|
-            if string =~ Support::Text::Patterns::URL
+            if string =~ URL_REGEX
               if block.arity == 2
                 yield string, page
               else
