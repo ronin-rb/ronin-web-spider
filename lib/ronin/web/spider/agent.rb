@@ -325,7 +325,7 @@ module Ronin
         # @api private
         #
         # @since 0.1.1
-        JAVASCRIPT_INLINE_REGEX = %r{
+        JAVASCRIPT_INLINE_REGEX_REGEX = %r{
           (?# match before the regex to avoid matching division operators )
           (?:[\{\[\(;:,]\s*|=\s*)
           /
@@ -350,7 +350,7 @@ module Ronin
         # @api private
         #
         # @since 0.1.1
-        JAVASCRIPT_TEMPLATE_LITERAL = /`(?:\\`|[^`])+`/m
+        JAVASCRIPT_TEMPLATE_LITERAL_REGEX = /`(?:\\`|[^`])+`/m
 
         #
         # Passes every JavaScript string value to the given block.
@@ -395,8 +395,8 @@ module Ronin
                   yield string
                 end
               else
-                scanner.skip(JAVASCRIPT_INLINE_REGEX) ||
-                  scanner.skip(JAVASCRIPT_TEMPLATE_LITERAL) ||
+                scanner.skip(JAVASCRIPT_INLINE_REGEX_REGEX) ||
+                  scanner.skip(JAVASCRIPT_TEMPLATE_LITERAL_REGEX) ||
                   scanner.getch
               end
             end
@@ -414,7 +414,7 @@ module Ronin
         # @api private
         #
         # @since 0.2.0
-        JAVASCRIPT_RELATIVE_PATH = %r{
+        JAVASCRIPT_RELATIVE_PATH_REGEX = %r{
           \A
             (?:
                [^/\\. ]+\.[a-z0-9]+ (?# filename.ext)
@@ -454,7 +454,7 @@ module Ronin
         #
         def every_javascript_relative_path_string(&block)
           every_javascript_string do |string,page|
-            if string =~ JAVASCRIPT_RELATIVE_PATH
+            if string =~ JAVASCRIPT_RELATIVE_PATH_REGEX
               if block.arity == 2
                 yield string, page
               else
@@ -471,7 +471,7 @@ module Ronin
         # @api private
         #
         # @since 0.2.0
-        JAVASCRIPT_ABSOLUTE_PATH = %r{\A(?:/[^/\\ ]+)+\z}
+        JAVASCRIPT_ABSOLUTE_PATH_REGEX = %r{\A(?:/[^/\\ ]+)+\z}
 
         #
         # Passes every JavaScript absolute path string to the given block.
@@ -503,7 +503,7 @@ module Ronin
         #
         def every_javascript_absolute_path_string(&block)
           every_javascript_string do |string,page|
-            if string =~ JAVASCRIPT_ABSOLUTE_PATH
+            if string =~ JAVASCRIPT_ABSOLUTE_PATH_REGEX
               if block.arity == 2
                 yield string, page
               else
