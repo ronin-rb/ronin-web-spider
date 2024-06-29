@@ -32,6 +32,14 @@ ronin-web-spider is a collection of common web spidering routines using the
   * [every_javascript_string][docs-every_javascript_string] - yields every
     single-quoted or double-quoted String literal from all JavaScript source
     code.
+  * [every_javascript_relative_path_string][docs-every_javascript_relative_path_string] -
+    yields every relative path JavaScript string (ex: `foo/bar`).
+  * [every_javascript_absolute_path_string][docs-every_javascript_absolute_path_string] -
+    yields every relative path JavaScript string (ex: `/foo/bar`).
+  * [every_javascript_path_string][docs-every_javascript_path_string] -
+    yields every relative path JavaScript string (ex: `foo/bar` or `/foo/bar`).
+  * [every_javascript_url_string][docs-every_javascript_url_string] -
+    yields every URL JavaScript string (ex: `https://example.com/foo/bar`).
   * [every_javascript_comment][docs-every_javascript_comment] - yields every
     JavaScript comment.
   * [every_comment][docs-every_comment] - yields every HTML or JavaScript
@@ -46,6 +54,10 @@ ronin-web-spider is a collection of common web spidering routines using the
 [docs-every_html_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_html_comment-instance_method
 [docs-every_javascript]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript-instance_method
 [docs-every_javascript_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_string-instance_method
+[docs-every_javascript_relative_path_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_relative_path_string-instance_method
+[docs-every_javascript_absolute_path_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_absolute_path_string-instance_method
+[docs-every_javascript_path_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_path_string-instance_method
+[docs-every_javascript_url_string]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_url_string-instance_method
 [docs-every_javascript_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_javascript_comment-instance_method
 [docs-every_comment]: https://ronin-rb.dev/docs/ronin-web-spider/Ronin/Web/Spider/Agent.html#every_comment-instance_method
 
