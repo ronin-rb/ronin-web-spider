@@ -327,7 +327,7 @@ module Ronin
         # @since 0.1.1
         JAVASCRIPT_INLINE_REGEX_REGEX = %r{
           (?# match before the regex to avoid matching division operators )
-          (?:[\{\[\(;:,]\s*|=\s*)
+          (?:[\{\[\(;:,]\s*|=\s*|return\s*)
           /
             (?# inline regex contents )
             (?:

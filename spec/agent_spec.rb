@@ -658,6 +658,7 @@ describe Ronin::Web::Spider::Agent do
                   <script type="text/javascript" src="/javascript1.js"></script>
                   <script type="text/javascript">
                   var foo  = /abc[`~!@#$%^&\\*\\(\\)_\\+\\-=\\[\\]\\{\\}\\\\\\|;:'",.\\/?<>]xyz/;
+                  qux(){return/abc[`~!@#$%^&\\*\\(\\)_\\+\\-=\\[\\]\\{\\}\\\\\\|;:'",.\\/?<>]xyz/}
                   var str3 = "string #3";
                   var bar  = [/multi
                   line/];
