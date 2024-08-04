@@ -22,7 +22,7 @@ module Ronin
   module Web
     module Spider
       # ronin-web-spider version
-      VERSION = '0.2.0'
+      VERSION = '0.2.1'
     end
   end
 end
