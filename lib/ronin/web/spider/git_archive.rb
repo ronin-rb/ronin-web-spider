@@ -18,8 +18,8 @@
 # along with ronin-web-spider.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/web/spider/archive'
-require 'ronin/web/spider/exceptions'
+require_relative 'archive'
+require_relative 'exceptions'
 
 module Ronin
   module Web

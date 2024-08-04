@@ -18,8 +18,8 @@
 # along with ronin-web-spider.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/web/spider/agent'
-require 'ronin/web/spider/version'
+require_relative 'spider/agent'
+require_relative 'spider/version'
 
 module Ronin
   module Web
