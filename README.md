@@ -100,7 +100,7 @@ end
 Spider multiple hosts:
 
 ```ruby
-Ronin::Web::Spider.start_at('http://company.com/', hosts: ['company.com', /host[\d]+\.company\.com\z/]) do |agent|
+Ronin::Web::Spider.start_at('http://company.com/', hosts: ['company.com', /.*\.company\.com\z/]) do |agent|
   # ...
 end
 ```
