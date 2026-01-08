@@ -108,7 +108,7 @@ end
 Do not spider certain links:
 
 ```ruby
-Ronin::Web::Spider.site('http://company.com/', ignore_links: [%{^/blog/}]) do |agent|
+Ronin::Web::Spider.site('http://company.com/', ignore_links: [%r{^/blog/}]) do |agent|
   # ...
 end
 ```
