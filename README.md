@@ -100,7 +100,7 @@ end
 Spider multiple hosts:
 
 ```ruby
-Ronin::Web::Spider.start_at('http://company.com/', hosts: ['company.com', /host[\d]+\.company\.com/]) do |agent|
+Ronin::Web::Spider.start_at('http://company.com/', hosts: ['company.com', /host[\d]+\.company\.com\z/]) do |agent|
   # ...
 end
 ```
@@ -108,7 +108,7 @@ end
 Do not spider certain links:
 
 ```ruby
-Ronin::Web::Spider.site('http://company.com/', ignore_links: [%r{^/blog/}]) do |agent|
+Ronin::Web::Spider.site('http://company.com/', ignore_links: [%r{\A/blog/}]) do |agent|
   # ...
 end
 ```
