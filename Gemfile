@@ -18,7 +18,7 @@ group :development do
 
   gem 'rspec',           '~> 3.0'
   gem 'webmock',         '~> 2.0'
-  gem 'sinatra',         '~> 1.0'
+  gem 'sinatra',         '~> 4.0'
   gem 'simplecov',       '~> 0.20'
 
   gem 'kramdown',        '~> 2.0'
